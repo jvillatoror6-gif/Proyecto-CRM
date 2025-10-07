@@ -4,6 +4,14 @@
  */
 package Formulario;
 
+import Clases.CategoriaIncidente;
+import Clases.ComboBox;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author ASUS
@@ -17,6 +25,46 @@ public class Incidentes extends javax.swing.JFrame {
      */
     public Incidentes() {
         initComponents();
+    }
+private void CargarComboCategoriasIncidente(){
+    
+        DefaultComboBoxModel model = new DefaultComboBoxModel ();
+    
+    Connection _conexion = null;
+    try {
+        String conexionString ="jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+        String driverName ="com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
+        Class.forName(driverName).newInstance();
+       _conexion = DriverManager.getConnection(conexionString, "root","012003"); 
+       _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+      
+       Statement st = _conexion.createStatement();
+       ResultSet rs = st.executeQuery ("select Id, Nombre from categorias\n" +
+                   "order by Nombre asc");
+       while (rs.next()){
+           
+           ComboBox C =new ComboBox(rs.getInt("Id"),rs.getString("Nombre"));
+           model.addElement(C);
+           
+//           
+//           System.out.println(rs.getInt("Idcategoria"));
+//           System.out.println(rs.getString("Nombre"));
+//           System.out.println("");
+       }
+      // System.out.println("Conexion exitosa!!!");
+    rs.close();
+    
+    jComboBoxCategoria.setModel(model);
+            
+    }catch (Exception ex){ 
+        System.out.println("Error" + ex.getMessage());
+    
+    }finally {
+        try {
+        _conexion.close();
+   }catch (Exception ex2){   
+   }        
+} 
     }
 
     /**
@@ -38,6 +86,7 @@ public class Incidentes extends javax.swing.JFrame {
         jTextFieldEstado = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaDescripcion = new javax.swing.JTextArea();
+        jButtonGuardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,6 +104,13 @@ public class Incidentes extends javax.swing.JFrame {
         jTextAreaDescripcion.setRows(5);
         jScrollPane1.setViewportView(jTextAreaDescripcion);
 
+        jButtonGuardar.setText("Guardar ");
+        jButtonGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGuardarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -66,17 +122,19 @@ public class Incidentes extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(18, 18, 18)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jButtonGuardar)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextFieldIDIncidentes, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                            .addComponent(jTextFieldIDIncidentes)
                             .addComponent(jTextFieldQueja)
-                            .addComponent(jTextFieldEstado)
+                            .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(237, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,13 +155,40 @@ public class Incidentes extends javax.swing.JFrame {
                     .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(36, 36, 36)
+                        .addComponent(jButtonGuardar))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
+
+        Incidente I = new Incidente();
+        I.setIdcategoriaIncidente(((ComboBox) jComboBoxCatergoriasIncidentes.getSelectedItem()).getId());
+        I.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
+        if (I.Guardar()) {
+            jTextFieldNombre.setText("");
+            // limpiar también los otros campos si quieres
+
+            //         Producto  P =new Producto  ();
+            //      P.setNombre(jTextFieldNombre.getText());
+            //      P.setStock((int)jFormattedTextFieldStock.getValue());
+            //      P.setPrecio((double) jFormattedTextFieldPrecio.getValue());
+            //      P.setIdcategoria(((ComboBox) jComboBoxCategoria.getSelectedItem()).getId());
+            //
+            //      if (P.Guardar()){
+                //      jTextFieldNombre.setText("");
+
+                JOptionPane.showMessageDialog(this, "Categoria creada","Informacion",JOptionPane.INFORMATION_MESSAGE);
+
+            } else
+            JOptionPane.showMessageDialog(this, "No fue posible crear la categoria","Error",JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_jButtonGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -131,6 +216,7 @@ public class Incidentes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonGuardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

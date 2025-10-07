@@ -33,7 +33,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenuItemClientes = new javax.swing.JMenuItem();
         jMenuItemProductos = new javax.swing.JMenuItem();
         jMenuItemCategorias = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItemIncidente = new javax.swing.JMenuItem();
         jMenuOperaciones = new javax.swing.JMenu();
         jMenuItemCrear = new javax.swing.JMenuItem();
         jMenuItemEliminar = new javax.swing.JMenuItem();
@@ -86,13 +86,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         jMenuCatalogo.add(jMenuItemCategorias);
 
-        jMenuItem2.setText("jMenuItem2");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemIncidente.setText("Incidentes");
+        jMenuItemIncidente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                jMenuItemIncidenteActionPerformed(evt);
             }
         });
-        jMenuCatalogo.add(jMenuItem2);
+        jMenuCatalogo.add(jMenuItemIncidente);
 
         jMenuBar1.add(jMenuCatalogo);
 
@@ -211,9 +211,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
          c.setVisible(true);
     }//GEN-LAST:event_jMenuItemCategoriasActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    private void jMenuItemIncidenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemIncidenteActionPerformed
+        Incidente I=new Incidente ();
+         I.setLocationRelativeTo(null);
+         I.setVisible(true);
+    }//GEN-LAST:event_jMenuItemIncidenteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,13 +252,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuCatalogo;
     private javax.swing.JMenu jMenuConsultas;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItemBuscar;
     private javax.swing.JMenuItem jMenuItemCategorias;
     private javax.swing.JMenuItem jMenuItemClientes;
     private javax.swing.JMenuItem jMenuItemCrear;
     private javax.swing.JMenuItem jMenuItemEliminar;
+    private javax.swing.JMenuItem jMenuItemIncidente;
     private javax.swing.JMenuItem jMenuItemIndicente;
     private javax.swing.JMenuItem jMenuItemProductos;
     private javax.swing.JMenuItem jMenuItemVentas;

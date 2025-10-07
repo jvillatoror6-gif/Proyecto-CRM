@@ -30,22 +30,25 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel2" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
-                          <Component id="jLabel3" alignment="0" min="-2" pref="88" max="-2" attributes="0"/>
                           <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                               <Component id="jLabel5" alignment="0" pref="73" max="32767" attributes="0"/>
                               <Component id="jLabel4" alignment="0" max="32767" attributes="0"/>
                           </Group>
+                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                              <Component id="jButtonGuardar" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel3" min="-2" pref="88" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jTextFieldIDIncidentes" pref="216" max="32767" attributes="0"/>
+                          <Component id="jTextFieldIDIncidentes" max="32767" attributes="0"/>
                           <Component id="jTextFieldQueja" max="32767" attributes="0"/>
-                          <Component id="jTextFieldEstado" max="32767" attributes="0"/>
+                          <Component id="jTextFieldEstado" min="-2" pref="234" max="-2" attributes="0"/>
                           <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="31" max="32767" attributes="0"/>
+              <EmptySpace pref="237" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -71,7 +74,11 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="jButtonGuardar" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="36" max="32767" attributes="0"/>
@@ -126,5 +133,13 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="jButtonGuardar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Guardar "/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonGuardarActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>
