@@ -54,7 +54,7 @@ private int id;
        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       
        Statement st = _conexion.createStatement();
-       st.execute("insert into categorias (nombre)values ('"+getNombre()+"')");
+       st.execute("INSERT INTO categorias (Nombre) VALUES('"+getNombre()+"')");
        
       // System.out.println("Conexion exitosa!!!");
     

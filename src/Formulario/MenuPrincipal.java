@@ -212,7 +212,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemCategoriasActionPerformed
 
     private void jMenuItemIncidenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemIncidenteActionPerformed
-        Incidente I=new Incidente ();
+        Incidentes I=new Incidentes ();
          I.setLocationRelativeTo(null);
          I.setVisible(true);
     }//GEN-LAST:event_jMenuItemIncidenteActionPerformed

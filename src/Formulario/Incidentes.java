@@ -26,7 +26,7 @@ public class Incidentes extends javax.swing.JFrame {
     public Incidentes() {
         initComponents();
     }
-private void CargarComboCategoriasIncidente(){
+private void CargarComboCategoriasIncidentes(){
     
         DefaultComboBoxModel model = new DefaultComboBoxModel ();
     
@@ -168,8 +168,8 @@ private void CargarComboCategoriasIncidente(){
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
 
-        Incidente I = new Incidente();
-        I.setIdcategoriaIncidente(((ComboBox) jComboBoxCatergoriasIncidentes.getSelectedItem()).getId());
+        Incidentes I = new Incidentes();
+        I.setIdcategoriaIncidentes(((ComboBox) jComboBoxCatergoriasIncidentes.getSelectedItem()).getId());
         I.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
         if (I.Guardar()) {
             jTextFieldNombre.setText("");

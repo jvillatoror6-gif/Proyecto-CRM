@@ -89,10 +89,10 @@ public class Categorias extends javax.swing.JFrame {
       if (c.Guardar()){
       jTextFieldNombre.setText("");
 
- JOptionPane.showMessageDialog(this, "Categoria creada","Informacion",JOptionPane.INFORMATION_MESSAGE);
+ JOptionPane.showMessageDialog(this, "Categorias creada","Informacion",JOptionPane.INFORMATION_MESSAGE);
     
      } else 
-          JOptionPane.showMessageDialog(this, "No fue posible crear la categoria","Error",JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(this, "No fue posible crear la categorias","Error",JOptionPane.ERROR_MESSAGE);
                                                  
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 
