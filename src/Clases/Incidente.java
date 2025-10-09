@@ -6,22 +6,17 @@ package Clases;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
  *
  * @author ASUS
  */
-public class CategoriaIncidente {
-
-/**
- *
- * @author kenet
- */
-
-private int id; 
-   private String nombre;
+public class Incidente {
+private int id;
+    private String queja;
+    private String estado;
+    private String descripcion;
     /**
      * @return the id
      */
@@ -37,20 +32,47 @@ private int id;
     }
 
     /**
-     * @return the nombre
+     * @return the queja
      */
-    public String getNombre() {
-        return nombre;
+    public String getQueja() {
+        return queja;
     }
 
     /**
-     * @param nombre the nombre to set
+     * @param queja the queja to set
      */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setQueja(String queja) {
+        this.queja = queja;
     }
-   
-    public boolean  Guardar(){
+
+    /**
+     * @return the estado
+     */
+    public String getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    /**
+     * @return the descripcion
+     */
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    /**
+     * @param descripcion the descripcion to set
+     */
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+ public boolean  Guardar(){
     
       Connection _conexion = null;
     try {
@@ -61,7 +83,8 @@ private int id;
        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       
        Statement st = _conexion.createStatement();
-       st.execute("INSERT INTO categorias (Nombre) VALUES('"+getNombre()+"')");
+       st.execute("insert into incidente (id, queja, estado, descripcion)\n" +
+           "values ('"+getId()+"',"+getQueja()+","+getEstado()+","+getDescripcion()+")");
        
       // System.out.println("Conexion exitosa!!!");
     
@@ -76,10 +99,7 @@ private int id;
    }catch (Exception ex2){   
    }        
 }
-    }
-}
-
     
-
-
+}
+}   
 
