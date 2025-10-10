@@ -34,8 +34,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenuItemProductos = new javax.swing.JMenuItem();
         jMenuItemCategorias = new javax.swing.JMenuItem();
         jMenuItemIncidente = new javax.swing.JMenuItem();
+        jMenuItemCategoriaIncident = new javax.swing.JMenuItem();
         jMenuOperaciones = new javax.swing.JMenu();
-        jMenuItemCrear = new javax.swing.JMenuItem();
+        jMenuItemLista = new javax.swing.JMenuItem();
         jMenuItemEliminar = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItemBuscar = new javax.swing.JMenuItem();
@@ -94,6 +95,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         jMenuCatalogo.add(jMenuItemIncidente);
 
+        jMenuItemCategoriaIncident.setText("Categoria Incidentes");
+        jMenuItemCategoriaIncident.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemCategoriaIncidentActionPerformed(evt);
+            }
+        });
+        jMenuCatalogo.add(jMenuItemCategoriaIncident);
+
         jMenuBar1.add(jMenuCatalogo);
 
         jMenuOperaciones.setText("operaciones");
@@ -107,8 +116,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jMenuItemCrear.setText("Crear");
-        jMenuOperaciones.add(jMenuItemCrear);
+        jMenuItemLista.setText("Lista");
+        jMenuOperaciones.add(jMenuItemLista);
 
         jMenuItemEliminar.setText("Editar");
         jMenuItemEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -190,7 +199,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemClientesActionPerformed
 
     private void jMenuItemEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemEliminarActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jMenuItemEliminarActionPerformed
 
     private void jMenuItemIndicenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemIndicenteActionPerformed
@@ -216,6 +225,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
          I.setLocationRelativeTo(null);
          I.setVisible(true);
     }//GEN-LAST:event_jMenuItemIncidenteActionPerformed
+
+    private void jMenuItemCategoriaIncidentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCategoriaIncidentActionPerformed
+        CategoriasIncidentes C=new CategoriasIncidentes ();
+         C.setLocationRelativeTo(null);
+         C.setVisible(true);
+    }//GEN-LAST:event_jMenuItemCategoriaIncidentActionPerformed
 
     /**
      * @param args the command line arguments
@@ -254,12 +269,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItemBuscar;
+    private javax.swing.JMenuItem jMenuItemCategoriaIncident;
     private javax.swing.JMenuItem jMenuItemCategorias;
     private javax.swing.JMenuItem jMenuItemClientes;
-    private javax.swing.JMenuItem jMenuItemCrear;
     private javax.swing.JMenuItem jMenuItemEliminar;
     private javax.swing.JMenuItem jMenuItemIncidente;
     private javax.swing.JMenuItem jMenuItemIndicente;
+    private javax.swing.JMenuItem jMenuItemLista;
     private javax.swing.JMenuItem jMenuItemProductos;
     private javax.swing.JMenuItem jMenuItemVentas;
     private javax.swing.JMenu jMenuOperaciones;

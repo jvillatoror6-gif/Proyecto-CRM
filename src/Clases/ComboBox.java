@@ -49,7 +49,5 @@ public class ComboBox {
     public void setNombre(String Nombre) {
         this.Nombre = Nombre;
     }
- 
 }
-
 

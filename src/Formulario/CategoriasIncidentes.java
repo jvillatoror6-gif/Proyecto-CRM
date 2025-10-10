@@ -13,14 +13,14 @@ import Clases.Categoria;
  *
  * @author ASUS
  */
-public class CatergoriasIncidentes extends javax.swing.JFrame {
+public class CategoriasIncidentes extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CatergoriasIncidentes.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CategoriasIncidentes.class.getName());
 
     /**
      * Creates new form CatergoriasIncidentes
      */
-    public CatergoriasIncidentes() {
+    public CategoriasIncidentes() {
         initComponents();
     }
 
@@ -123,7 +123,7 @@ public class CatergoriasIncidentes extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new CatergoriasIncidentes().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new CategoriasIncidentes().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

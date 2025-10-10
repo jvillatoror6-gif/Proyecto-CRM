@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,6 +26,7 @@ public class Incidentes extends javax.swing.JFrame {
      */
     public Incidentes() {
         initComponents();
+        CargarComboCategoriasIncidentes();
     }
 private void CargarComboCategoriasIncidentes(){
     
@@ -54,7 +56,7 @@ private void CargarComboCategoriasIncidentes(){
       // System.out.println("Conexion exitosa!!!");
     rs.close();
     
-    jComboBoxCategoria.setModel(model);
+    jComboBoxCategoriasIncidentes.setModel(model);
             
     }catch (Exception ex){ 
         System.out.println("Error" + ex.getMessage());
@@ -169,7 +171,7 @@ private void CargarComboCategoriasIncidentes(){
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
 
         Incidentes I = new Incidentes();
-        I.setIdcategoriaIncidentes(((ComboBox) jComboBoxCatergoriasIncidentes.getSelectedItem()).getId());
+        I.setID(((ComboBox) jComboBoxCategoriasIncidentes.getSelectedItem()).getId());
         I.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
         if (I.Guardar()) {
             jTextFieldNombre.setText("");
