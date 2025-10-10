@@ -21,7 +21,16 @@ public class IteradorLista {
             return false;
     }
     Object obtener (){
+<<<<<<< HEAD
         return this.actual.getElemento();
+=======
+        return this.actual.elemento;
+    }
+    void avanzar (){
+        if (!estaFuera()){
+        this.actual = this.actual.siguiente;
+>>>>>>> 5c6d47b02f197a4fdcea7284600f6fbf7a840f82
     }
    
 }
+}   
