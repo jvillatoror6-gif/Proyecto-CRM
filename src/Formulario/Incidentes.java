@@ -6,6 +6,8 @@ package Formulario;
 
 import Clases.CategoriaIncidente;
 import Clases.ComboBox;
+import Clases.Incidente;
+import Formulario.CategoriasIncidentes;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -41,11 +43,11 @@ private void CargarComboCategoriasIncidentes(){
        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       
        Statement st = _conexion.createStatement();
-       ResultSet rs = st.executeQuery ("select Id, Nombre from categorias\n" +
+       ResultSet rs = st.executeQuery ("select Id, Queja, Estado, Descripcion, IdCategoria from categoria\n" +
                    "order by Nombre asc");
        while (rs.next()){
            
-           ComboBox C =new ComboBox(rs.getInt("Id"),rs.getString("Nombre"));
+           ComboBox C =new ComboBox(rs.getInt("Id"),rs.getString("IdCategoria"));
            model.addElement(C);
            
 //           
@@ -56,7 +58,7 @@ private void CargarComboCategoriasIncidentes(){
       // System.out.println("Conexion exitosa!!!");
     rs.close();
     
-    jComboBoxCategoriasIncidentes.setModel(model);
+    jComboBoxidCategoria.setModel(model);
             
     }catch (Exception ex){ 
         System.out.println("Error" + ex.getMessage());
@@ -89,6 +91,7 @@ private void CargarComboCategoriasIncidentes(){
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaDescripcion = new javax.swing.JTextArea();
         jButtonGuardar = new javax.swing.JButton();
+        jComboBoxidCategoria = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -113,6 +116,8 @@ private void CargarComboCategoriasIncidentes(){
             }
         });
 
+        jComboBoxidCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,8 +140,10 @@ private void CargarComboCategoriasIncidentes(){
                             .addComponent(jTextFieldIDIncidentes)
                             .addComponent(jTextFieldQueja)
                             .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(237, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(31, 31, 31)
+                        .addComponent(jComboBoxidCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(143, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,7 +153,8 @@ private void CargarComboCategoriasIncidentes(){
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextFieldIDIncidentes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldIDIncidentes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxidCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -170,22 +178,15 @@ private void CargarComboCategoriasIncidentes(){
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
 
-        Incidentes I = new Incidentes();
-        I.setID(((ComboBox) jComboBoxCategoriasIncidentes.getSelectedItem()).getId());
-        I.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
+        Incidente I = new Incidente();
+        I.setId(Integer.parseInt(jTextFieldIDIncidentes.getText()));
+        I.setQueja(jTextFieldQueja.getText());
+        I.setEstado(jTextFieldEstado.getText());
+        I.setDescripcion(jTextAreaDescripcion.getText());
+        I.setIdCategoria(((ComboBox) jComboBoxidCategoria.getSelectedItem()).getIdCategoria());
         if (I.Guardar()) {
-            jTextFieldNombre.setText("");
-            // limpiar también los otros campos si quieres
-
-            //         Producto  P =new Producto  ();
-            //      P.setNombre(jTextFieldNombre.getText());
-            //      P.setStock((int)jFormattedTextFieldStock.getValue());
-            //      P.setPrecio((double) jFormattedTextFieldPrecio.getValue());
-            //      P.setIdcategoria(((ComboBox) jComboBoxCategoria.getSelectedItem()).getId());
-            //
-            //      if (P.Guardar()){
-                //      jTextFieldNombre.setText("");
-
+            jTextFieldIDIncidentes.setText("");
+            
                 JOptionPane.showMessageDialog(this, "Categoria creada","Informacion",JOptionPane.INFORMATION_MESSAGE);
 
             } else
@@ -219,6 +220,7 @@ private void CargarComboCategoriasIncidentes(){
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonGuardar;
+    private javax.swing.JComboBox<String> jComboBoxidCategoria;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -230,4 +232,8 @@ private void CargarComboCategoriasIncidentes(){
     private javax.swing.JTextField jTextFieldIDIncidentes;
     private javax.swing.JTextField jTextFieldQueja;
     // End of variables declaration//GEN-END:variables
+
+    private void setId(int parseInt) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

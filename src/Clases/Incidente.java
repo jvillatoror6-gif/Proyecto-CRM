@@ -13,10 +13,25 @@ import java.sql.Statement;
  * @author ASUS
  */
 public class Incidente {
-private int id;
+    private int id;
     private String queja;
     private String estado;
     private String descripcion;
+    private String IdCategoria;
+    /**
+     * @return the IdCatergoriaIncidente
+     */
+    public String getIdCategoria() {
+        return IdCategoria;
+    }
+
+    /**
+     * @param IdCategoria the IdCatergoriaIncidente to set
+     */
+    public void setIdCategoria(String IdCategoria) {
+        this.IdCategoria = IdCategoria;
+    }
+
     /**
      * @return the id
      */
@@ -83,7 +98,7 @@ private int id;
        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       
        Statement st = _conexion.createStatement();
-       st.execute("insert into incidente (id, queja, estado, descripcion)\n" +
+       st.execute("insert into incidente (Id, Queja, Estado, Descripcion, IdCategoria)\n" +
            "values ('"+getId()+"',"+getQueja()+","+getEstado()+","+getDescripcion()+")");
        
       // System.out.println("Conexion exitosa!!!");

@@ -9,8 +9,34 @@ package Clases;
  * @author ASUS
  */
 public class NodoLista {
-   Object elemento;
+    Object elemento;
    NodoLista siguiente;
+    
+   public Object getElemento() {
+        return elemento;
+    }
+
+    /**
+     * @param elemento the elemento to set
+     */
+    public void setElemento(Object elemento) {
+        this.elemento = elemento;
+    }
+
+    /**
+     * @return the siguiente
+     */
+    public NodoLista getSiguiente() {
+        return siguiente;
+    }
+
+    /**
+     * @param siguiente the siguiente to set
+     */
+    public void setSiguiente(NodoLista siguiente) {
+        this.siguiente = siguiente;
+    }
+   
    
    NodoLista (Object o){
        this.elemento=o;

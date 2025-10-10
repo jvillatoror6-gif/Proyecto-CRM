@@ -21,9 +21,7 @@ public class IteradorLista {
             return false;
     }
     Object obtener (){
-        return this.actual.elemento;
+        return this.actual.getElemento();
     }
-    void(!estaFuera()){
-        this.actual=this.actual.siguiente;
-    }
+   
 }
