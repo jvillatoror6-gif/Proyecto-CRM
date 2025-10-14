@@ -9,8 +9,24 @@ package Clases;
  * @author kenet
  */
 public class ComboBox {
-     private int Id;
+ private int Id;
    private String Nombre;
+   private int Idcategoria;
+   
+    /**
+     * @return the Idcategoria
+     */
+    public int getIdcategoria() {
+        return Idcategoria;
+    }
+
+    /**
+     * @param Idcategoria the Idcategoria to set
+     */
+    public void setIdcategoria(int Idcategoria) {
+        this.Idcategoria = Idcategoria;
+    }
+   
    
    public ComboBox( int Id, String Nombre){
        this.Id=Id;

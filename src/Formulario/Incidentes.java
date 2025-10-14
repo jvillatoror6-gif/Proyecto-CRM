@@ -58,7 +58,7 @@ private void CargarComboCategoriasIncidentes(){
       // System.out.println("Conexion exitosa!!!");
     rs.close();
     
-    jComboBoxidCategoria.setModel(model);
+    jComboBoxIdCategoria.setModel(model);
             
     }catch (Exception ex){ 
         System.out.println("Error" + ex.getMessage());
@@ -91,7 +91,7 @@ private void CargarComboCategoriasIncidentes(){
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaDescripcion = new javax.swing.JTextArea();
         jButtonGuardar = new javax.swing.JButton();
-        jComboBoxidCategoria = new javax.swing.JComboBox<>();
+        jComboBoxIdCategoria = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,7 +116,11 @@ private void CargarComboCategoriasIncidentes(){
             }
         });
 
-        jComboBoxidCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxIdCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxIdCategoriaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,8 +146,8 @@ private void CargarComboCategoriasIncidentes(){
                             .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(31, 31, 31)
-                        .addComponent(jComboBoxidCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(143, Short.MAX_VALUE))
+                        .addComponent(jComboBoxIdCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,7 +158,7 @@ private void CargarComboCategoriasIncidentes(){
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jTextFieldIDIncidentes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxidCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxIdCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -183,7 +187,7 @@ private void CargarComboCategoriasIncidentes(){
         I.setQueja(jTextFieldQueja.getText());
         I.setEstado(jTextFieldEstado.getText());
         I.setDescripcion(jTextAreaDescripcion.getText());
-        I.setIdCategoria(((ComboBox) jComboBoxidCategoria.getSelectedItem()).getIdCategoria());
+       I.setCategoria(((ComboBox) jComboBoxIdCategoria.getSelectedItem()).getId());
         if (I.Guardar()) {
             jTextFieldIDIncidentes.setText("");
             
@@ -192,6 +196,10 @@ private void CargarComboCategoriasIncidentes(){
             } else
             JOptionPane.showMessageDialog(this, "No fue posible crear la categoria","Error",JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_jButtonGuardarActionPerformed
+
+    private void jComboBoxIdCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxIdCategoriaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxIdCategoriaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,7 +228,7 @@ private void CargarComboCategoriasIncidentes(){
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonGuardar;
-    private javax.swing.JComboBox<String> jComboBoxidCategoria;
+    private javax.swing.JComboBox<String> jComboBoxIdCategoria;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -233,7 +241,6 @@ private void CargarComboCategoriasIncidentes(){
     private javax.swing.JTextField jTextFieldQueja;
     // End of variables declaration//GEN-END:variables
 
-    private void setId(int parseInt) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   
     }
-}
+

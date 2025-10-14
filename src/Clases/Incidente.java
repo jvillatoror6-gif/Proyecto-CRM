@@ -17,19 +17,19 @@ public class Incidente {
     private String queja;
     private String estado;
     private String descripcion;
-    private String IdCategoria;
+    private String IDCategoria;
     /**
      * @return the IdCatergoriaIncidente
      */
     public String getIdCategoria() {
-        return IdCategoria;
+        return IDCategoria;
     }
 
     /**
      * @param IdCategoria the IdCatergoriaIncidente to set
      */
     public void setIdCategoria(String IdCategoria) {
-        this.IdCategoria = IdCategoria;
+        this.IDCategoria = IdCategoria;
     }
 
     /**
@@ -116,5 +116,9 @@ public class Incidente {
 }
     
 }
+
+    public void setCategoria(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }   
 
