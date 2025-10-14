@@ -43,7 +43,7 @@ private void CargarComboCategoriasIncidentes(){
        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       
        Statement st = _conexion.createStatement();
-       ResultSet rs = st.executeQuery ("select Id, Queja, Estado, Descripcion, IdCategoria from categoria\n" +
+       ResultSet rs = st.executeQuery ("select Id, Nombre from categorias\n" +
                    "order by Nombre asc");
        while (rs.next()){
            

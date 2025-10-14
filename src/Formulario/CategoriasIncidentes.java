@@ -8,6 +8,7 @@ import java.util.HashSet;
 import javax.swing.JOptionPane;
 
 import Clases.Categoria;
+import Clases.CategoriaIncidente;
 
 /**
  *
@@ -88,7 +89,7 @@ public class CategoriasIncidentes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
-        Categoria c =new Categoria ();
+        CategoriaIncidente c =new CategoriaIncidente ();
         c.setNombre(jTextFieldNombre.getText());
 
         if (c.Guardar()){
