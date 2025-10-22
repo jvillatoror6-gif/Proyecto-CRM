@@ -1,19 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Formulario;
 
 import Clases.Categoria;
 import Clases.ComboBox;
 import Clases.Producto;
 import Formulario.Categorias;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+
 
 /**
  *
@@ -22,6 +28,11 @@ import javax.swing.JOptionPane;
 public class Productos extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Productos.class.getName());
+    private Object _model;
+    private Connection _conexion;
+    
+    private DefaultTableModel model;
+    private JTable _Tabla;
 
     /**
      * Creates new form Productos
@@ -29,6 +40,8 @@ public class Productos extends javax.swing.JFrame {
     public Productos() {
         initComponents();
          CargarComboCategorias(); 
+        CrearModelo();
+         CargarTabla();
         
           
     }
@@ -73,6 +86,133 @@ public class Productos extends javax.swing.JFrame {
    }        
 } 
     }
+    private void CrearModelo(){
+        String [] nombreColumnas = {"Id", "nombre", "Precio", "Stock", "Categoria"};
+        model = new DefaultTableModel (nombreColumnas, 0);
+        _Tabla = new JTable(model);
+    
+        JScrollPane scroll = new JScrollPane(_Tabla);
+        
+       _Tabla.addMouseListener(new MouseListener() {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        CargarDatos();
+    }
+    public void mousePressed(MouseEvent e) {}
+
+    public void mouseReleased(MouseEvent e) {}
+    
+    public void mouseEntered(MouseEvent e) {}
+    
+    public void mouseExited(MouseEvent e) {}
+});
+
+    
+    jPanelTabla.removeAll();
+    jPanelTabla.setLayout(new java.awt.BorderLayout());
+    jPanelTabla.add(scroll, java.awt.BorderLayout.CENTER);
+    jPanelTabla.revalidate();
+    jPanelTabla.repaint();
+    }
+    private void CargarTabla() {
+    try {
+        String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+        String driverName = "com.mysql.cj.jdbc.Driver";
+        Class.forName(driverName).newInstance();
+        _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+        Statement st = _conexion.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT Id, Nombre, Precio, Stock, Idcategoria FROM categorias ORDER BY Nombre ASC"
+        );
+
+        while (rs.next()) {
+            Vector<Object> producto = new Vector<>();
+            producto.add(rs.getInt("Id"));
+            producto.add(rs.getString("Nombre"));
+            producto.add(rs.getDouble("Precio"));
+            producto.add(rs.getInt("Stock"));
+            producto.add(rs.getInt("Idcategoria"));
+            model.addRow(producto);
+        }
+
+        rs.close();
+        st.close();
+    } catch (Exception ex) {
+        System.out.println("Error: " + ex.getMessage());
+    } finally {
+        try {
+            if (_conexion != null) _conexion.close();
+        } catch (Exception e) {
+            System.out.println("Error al cerrar conexión: " + e.getMessage());
+        }
+    }
+}
+
+    private void CargarDatos(){
+        try {
+        int _id = 0;
+        int filaSeleccionada = _Tabla.getSelectedRow();
+        _id = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
+        String Nombre = _Tabla.getValueAt(filaSeleccionada, 1).toString();
+        String precio = _Tabla.getValueAt(filaSeleccionada, 2).toString();
+        int Stock = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 3).toString());
+        int idCategoria = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 4).toString());
+        String categoria = _Tabla.getValueAt(filaSeleccionada, 4).toString();
+        ComboBox categoriaSeleccionada = new ComboBox(idCategoria, categoria);
+        jComboBoxCategoria.getModel().setSelectedItem(categoriaSeleccionada);
+        jTextFieldNombre.setText(nombre);
+        jFormattedTextFieldPrecio.setText(precio);
+        jFormattedTextFieldStock.setText(stock);
+        } catch (Exception ex) {
+        System.out.println("ERROR " + ex.getMessage());
+}
+        }
+        
+    }
+    public boolean Guardar(int id) {
+    Connection _conexion = null;
+    
+
+    try {
+        String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+        String driverName = "com.mysql.cj.jdbc.Driver";
+        Class.forName(driverName).newInstance();
+        _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+        Statement st = _conexion.createStatement();
+
+        if (id == 0) {
+            String sql = "INSERT INTO productos (nombre, precio, stock, idcategoria)"
+            + "values ("+ getNombre() + "', " + getPrecio() + ", " + getStock() + ", " + getIdCategoria() + ")";
+            st.executeUpdate(sql);
+        } else {
+            String sql = "UPDATE productos SET nombre = '" + getNombre() + 
+                    "', precio = " + getPrecio() + 
+                    ", stock = " + getStock() + 
+                    ", idcategoria = " + getIdCategoria() + 
+                    " WHERE idproducto = " + id;
+            st.executeUpdate(sql);
+        }
+
+        return true;
+
+    } catch (Exception ex) {
+        System.out.println("Error al guardar producto: " + ex.getMessage());
+        return false;
+
+    } finally {
+        try {
+            if (_conexion != null && !_conexion.isClosed()) {
+                _conexion.close();
+            }
+        } catch (Exception e) {
+            System.out.println("Error al cerrar conexión: " + e.getMessage());
+        }
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,6 +233,7 @@ public class Productos extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jComboBoxCategoria = new javax.swing.JComboBox<>();
+        jPanelTabla = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -128,6 +269,17 @@ public class Productos extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout jPanelTablaLayout = new javax.swing.GroupLayout(jPanelTabla);
+        jPanelTabla.setLayout(jPanelTablaLayout);
+        jPanelTablaLayout.setHorizontalGroup(
+            jPanelTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 260, Short.MAX_VALUE)
+        );
+        jPanelTablaLayout.setVerticalGroup(
+            jPanelTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 192, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,31 +304,38 @@ public class Productos extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                             .addGap(30, 30, 30)
                             .addComponent(jButtonGuardar))))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addGap(66, 66, 66)
+                .addComponent(jPanelTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jFormattedTextFieldStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jFormattedTextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jComboBoxCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
-                .addComponent(jButtonGuardar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jFormattedTextFieldStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jFormattedTextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jComboBoxCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(34, 34, 34)
+                        .addComponent(jButtonGuardar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jPanelTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
@@ -192,17 +351,12 @@ public class Productos extends javax.swing.JFrame {
         P.setIdcategoria(((ComboBox) jComboBoxCategoria.getSelectedItem()).getId());
 
         if (P.Guardar()) {
+            int _id = 0;
             jTextFieldNombre.setText("");
-            // limpiar también los otros campos si quieres
-
-            //         Producto  P =new Producto  ();
-            //      P.setNombre(jTextFieldNombre.getText());
-            //      P.setStock((int)jFormattedTextFieldStock.getValue());
-            //      P.setPrecio((double) jFormattedTextFieldPrecio.getValue());
-            //      P.setIdcategoria(((ComboBox) jComboBoxCategoria.getSelectedItem()).getId());
-            //
-            //      if (P.Guardar()){
-                //      jTextFieldNombre.setText("");
+            jFormattedTextFieldStock.setValue(null);
+            jFormattedTextFieldPrecio.setValue(null);
+            jFormattedTextFieldPrecio.setValue(null);
+            jComboBoxCategoria.setSelectedIndex(-1);
 
                 JOptionPane.showMessageDialog(this, "Categoria creada","Informacion",JOptionPane.INFORMATION_MESSAGE);
 
@@ -254,6 +408,7 @@ public class Productos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanelTabla;
     private javax.swing.JTextField jTextFieldNombre;
     // End of variables declaration//GEN-END:variables
-}
+
