@@ -187,7 +187,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuOperacionesMenuSelected
 
     private void jMenuItemProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemProductosActionPerformed
-        Productos p=new Productos ();
+        AbcProductos p=new AbcProductos ();
          p.setLocationRelativeTo(null);
          p.setVisible(true);
     }//GEN-LAST:event_jMenuItemProductosActionPerformed
