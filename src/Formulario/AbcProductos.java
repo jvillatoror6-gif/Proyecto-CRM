@@ -225,7 +225,7 @@ public class AbcProductos extends javax.swing.JFrame {
 //            }
 //        }
     }
-    Private void Eliminar (){
+    private void Eliminar (){
         if (_id !=0){
             int o = JOptionPane.showConfirmDialog(this, "Seguro que lo eliminara?", "Advertencia", JOptionPane.YES_NO_OPTION);
             if (o==0){
@@ -392,10 +392,10 @@ public class AbcProductos extends javax.swing.JFrame {
             jFormattedTextFieldPrecio.setValue(null);
             jComboBoxCategoria.setSelectedIndex(-1);
 
-            JOptionPane.showMessageDialog(this, "Categoria creada", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Producto creado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 
         } else {
-            JOptionPane.showMessageDialog(this, "No fue posible crear la categoria", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No fue posible crear el producto ", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_jButtonGuardarActionPerformed

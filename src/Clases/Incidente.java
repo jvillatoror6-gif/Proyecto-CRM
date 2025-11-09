@@ -98,7 +98,7 @@ public class Incidente {
        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       
        Statement st = _conexion.createStatement();
-       st.execute("insert into incidente (Id, Queja, Estado, Descripcion, IdCategoria)\n" +
+       st.execute("insert into incidentes (Id, Queja, Estado, Descripcion, IdCategoria)\n" +
            "values ('"+getId()+"',"+getQueja()+","+getEstado()+","+getDescripcion()+")");
        
       // System.out.println("Conexion exitosa!!!");

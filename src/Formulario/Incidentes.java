@@ -188,13 +188,14 @@ private void CargarComboCategoriasIncidentes(){
         I.setEstado(jTextFieldEstado.getText());
         I.setDescripcion(jTextAreaDescripcion.getText());
        I.setCategoria(((ComboBox) jComboBoxIdCategoria.getSelectedItem()).getId());
-        if (I.Guardar()) {
+        
+       if (I.Guardar()) {
             jTextFieldIDIncidentes.setText("");
             
-                JOptionPane.showMessageDialog(this, "Categoria creada","Informacion",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Incidente creado","Informacion",JOptionPane.INFORMATION_MESSAGE);
 
             } else
-            JOptionPane.showMessageDialog(this, "No fue posible crear la categoria","Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No fue posible crear el incidente ","Error",JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 
     private void jComboBoxIdCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxIdCategoriaActionPerformed

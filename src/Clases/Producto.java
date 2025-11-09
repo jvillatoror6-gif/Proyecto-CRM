@@ -1,4 +1,4 @@
-    package Clases;
+package Clases;
 
 
 import java.sql.Connection;
@@ -116,7 +116,7 @@ public class Producto {
       
        Statement st = _conexion.createStatement();
        st.execute("insert into producto (Nombre,precio,stock, Idcategoria)\n" +
-           "values ('"+getNombre() +"',"+ getPrecio()+"," + getStock()+"," + getIdcategoria()+")");
+           "values ('"+getNombre()+"', "+ getPrecio()+" ,"+ getStock()+"," + getIdcategoria()+")");
        
       // System.out.println("Conexion exitosa!!!");
     
