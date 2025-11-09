@@ -28,48 +28,48 @@ public class Incidentes extends javax.swing.JFrame {
      */
     public Incidentes() {
         initComponents();
-        CargarComboCategoriasIncidentes();
+//        CargarComboCategoriasIncidentes();
     }
-private void CargarComboCategoriasIncidentes(){
-    
-        DefaultComboBoxModel model = new DefaultComboBoxModel ();
-    
-    Connection _conexion = null;
-    try {
-        String conexionString ="jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-        String driverName ="com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
-        Class.forName(driverName).newInstance();
-       _conexion = DriverManager.getConnection(conexionString, "root","012003"); 
-       _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-      
-       Statement st = _conexion.createStatement();
-       ResultSet rs = st.executeQuery ("select Id, Nombre from categorias\n" +
-                   "order by Nombre asc");
-       while (rs.next()){
-           
-           ComboBox C =new ComboBox(rs.getInt("Id"),rs.getString("IdCategoria"));
-           model.addElement(C);
-           
+//private void CargarComboCategoriasIncidentes(){
+//    
+//        DefaultComboBoxModel model = new DefaultComboBoxModel ();
+//    
+//    Connection _conexion = null;
+//    try {
+//        String conexionString ="jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+//        String driverName ="com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
+//        Class.forName(driverName).newInstance();
+//       _conexion = DriverManager.getConnection(conexionString, "root","012003"); 
+//       _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+//      
+//       Statement st = _conexion.createStatement();
+//       ResultSet rs = st.executeQuery ("select Id, Nombre from categorias\n" +
+//                   "order by Nombre asc");
+//       while (rs.next()){
 //           
-//           System.out.println(rs.getInt("Idcategoria"));
-//           System.out.println(rs.getString("Nombre"));
-//           System.out.println("");
-       }
-      // System.out.println("Conexion exitosa!!!");
-    rs.close();
-    
-    jComboBoxIdCategoria.setModel(model);
-            
-    }catch (Exception ex){ 
-        System.out.println("Error" + ex.getMessage());
-    
-    }finally {
-        try {
-        _conexion.close();
-   }catch (Exception ex2){   
-   }        
-} 
-    }
+//           ComboBox C =new ComboBox(rs.getInt("Id"),rs.getString("IdCategoria"));
+//           model.addElement(C);
+//           
+////           
+////           System.out.println(rs.getInt("Idcategoria"));
+////           System.out.println(rs.getString("Nombre"));
+////           System.out.println("");
+//       }
+//      // System.out.println("Conexion exitosa!!!");
+//    rs.close();
+//    
+//    jComboBoxIdCategoria.setModel(model);
+//            
+//    }catch (Exception ex){ 
+//        System.out.println("Error" + ex.getMessage());
+//    
+//    }finally {
+//        try {
+//        _conexion.close();
+//   }catch (Exception ex2){   
+//   }        
+//} 
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -116,6 +116,7 @@ private void CargarComboCategoriasIncidentes(){
             }
         });
 
+        jComboBoxIdCategoria.setToolTipText("");
         jComboBoxIdCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxIdCategoriaActionPerformed(evt);

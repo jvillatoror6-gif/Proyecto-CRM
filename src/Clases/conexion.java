@@ -11,7 +11,7 @@ public class conexion {
 
     public static String DB_NAME = "eduardo";
     public static String USER = "root"; 
-    public static String PASSWORD = "Ramirez-77"; 
+    public static String PASSWORD = "Ramirez-77";
     
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_URL_BASE = "jdbc:mysql://localhost:3306/";
