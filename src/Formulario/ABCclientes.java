@@ -40,47 +40,47 @@ public class ABCclientes extends javax.swing.JFrame {
      */
     public ABCclientes() {
         initComponents();
-        CargarComboCategorias();
+//        CargarComboCategorias();
         CrearModelo();
         CargarTabla();
 
     }
 
-    private void CargarComboCategorias() {
-
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-
-        Connection _conexion = null;
-        try {
-            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-            String driverName = "com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
-            Class.forName(driverName).newInstance();
-            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
-            Statement st = _conexion.createStatement();
-            ResultSet rs = st.executeQuery("select Id, Nombre from categorias\n"
-                    + "order by Nombre asc");
-            while (rs.next()) {
-
-                ComboBox C = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
-                model.addElement(C);
-                System.out.println("");
-            }
-            rs.close();
-
-//            jComboBoxCategoriaIncidente.setModel(model);
-
-        } catch (Exception ex) {
-            System.out.println("Error" + ex.getMessage());
-
-        } finally {
-            try {
-                _conexion.close();
-            } catch (Exception ex2) {
-            }
-        }
-    }
+//    private void CargarComboCategorias() {
+//
+//        DefaultComboBoxModel model = new DefaultComboBoxModel();
+//
+//        Connection _conexion = null;
+//        try {
+//            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+//            String driverName = "com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
+//            Class.forName(driverName).newInstance();
+//            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+//            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+//
+//            Statement st = _conexion.createStatement();
+//            ResultSet rs = st.executeQuery("select Id, Nombre from categorias\n"
+//                    + "order by Nombre asc");
+//            while (rs.next()) {
+//
+//                ComboBox C = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
+//                model.addElement(C);
+//                System.out.println("");
+//            }
+//            rs.close();
+//
+////            jComboBoxCategoriaIncidente.setModel(model);
+//
+//        } catch (Exception ex) {
+//            System.out.println("Error" + ex.getMessage());
+//
+//        } finally {
+//            try {
+//                _conexion.close();
+//            } catch (Exception ex2) {
+//            }
+//        }
+//    }
 
     private void CrearModelo() {
         String[] nombreColumnas = {"Id", "nombre", "Precio", "Stock", "Categoria"};
