@@ -1,118 +1,129 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Clases;
 
-import Clases.conexion;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.sql.SQLException;
-import java.sql.Timestamp; 
-import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
+import java.time.LocalDateTime;
 
+/**
+ *
+ * @author Eduar
+ */
 public class Venta {
-    
-    private int idClientes;
+
+    private int idCliente;
     private double precio;
     private int noProducto;
     private LocalDateTime fechaVenta;
 
-    /**
-     * @return the idClientes
-     */
-    public int getIdClientes() {
-        return idClientes;
+    // Getters y Setters
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    /**
-     * @param idClientes the idClientes to set
-     */
-    public void setIdClientes(int idClientes) {
-        this.idClientes = idClientes;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
-    /**
-     * @return the precio
-     */
     public double getPrecio() {
         return precio;
     }
 
-    /**
-     * @param precio the precio to set
-     */
     public void setPrecio(double precio) {
         this.precio = precio;
     }
 
-    /**
-     * @return the noProducto
-     */
     public int getNoProducto() {
         return noProducto;
     }
 
-    /**
-     * @param noProducto the noProducto to set
-     */
     public void setNoProducto(int noProducto) {
         this.noProducto = noProducto;
     }
 
-    /**
-     * @return the fechaVenta
-     */
     public LocalDateTime getFechaVenta() {
         return fechaVenta;
     }
 
-    /**
-     * @param fechaVenta the fechaVenta to set
-     */
     public void setFechaVenta(LocalDateTime fechaVenta) {
         this.fechaVenta = fechaVenta;
     }
-    
-    public void GuardarVenta(Venta venta) {
-        
 
-        String mensaje = "¿Desea guardar esta venta con los siguientes datos?\n\n"
-                + "ID Cliente: " + venta.getIdClientes() + "\n"
-                + "Precio: " + venta.getPrecio() + "\n"
-                + "Producto: " + venta.getNoProducto();
-               
+    // Método para guardar una venta
+    public boolean Guardar() {
 
-        int opcion = JOptionPane.showConfirmDialog(
-                null,
-                mensaje,
-                "Confirmar guardado de venta",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
+        Connection _conexion = null;
+        try {
+            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+            String driverName = "com.mysql.cj.jdbc.Driver";
+            Class.forName(driverName).newInstance();
+            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
-        if (opcion == JOptionPane.YES_OPTION) {
-            
+            Statement st = _conexion.createStatement();
 
-            String sql = "INSERT INTO ventas (Idclientes, Precio, `No producto`, `Fecha venta`) " 
-                       + "VALUES (?, ?, ?, NOW())";
-                      
-        try (Connection cx = conexion.conectar(); 
-        PreparedStatement ps = cx.prepareStatement(sql)) {
+            // Inserción con NOW() para la fecha actual
+            String sql = "INSERT INTO ventas (IdCliente, Precio, `NoProducto`, `FechaVenta`) VALUES ('"
+                    + getIdCliente() + "', '"
+                    + getPrecio() + "', '"
+                    + getNoProducto() + "', NOW())";
 
-                ps.setInt(1, venta.getIdClientes());
-                ps.setDouble(2, venta.getPrecio());
-                ps.setInt(3, venta.getNoProducto());
+            st.execute(sql);
 
-                ps.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Venta registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Venta registrada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            return true;
 
-            } catch (SQLException ex) {
-                // Manejo de errores de SQL
-                JOptionPane.showMessageDialog(null, "Error al registrar la venta: " + ex.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            System.out.println("Error al guardar venta: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al guardar venta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+
+        } finally {
+            try {
+                if (_conexion != null) {
+                    _conexion.close();
+                }
+            } catch (SQLException ex2) {
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Registro cancelado.");
         }
     }
-    
 
-    
+    // Método para eliminar una venta (opcional)
+    public boolean Eliminar(int idVenta) {
+
+        Connection _conexion = null;
+        try {
+            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+            String driverName = "com.mysql.cj.jdbc.Driver";
+            Class.forName(driverName).newInstance();
+            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+            Statement st = _conexion.createStatement();
+            String sql = "DELETE FROM ventas WHERE IdVenta = " + idVenta;
+            st.execute(sql);
+
+            JOptionPane.showMessageDialog(null, "Venta eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+
+        } catch (Exception ex) {
+            System.out.println("Error al eliminar venta: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al eliminar venta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+
+        } finally {
+            try {
+                if (_conexion != null) {
+                    _conexion.close();
+                }
+            } catch (SQLException ex2) {
+            }
+        }
+    }
 }

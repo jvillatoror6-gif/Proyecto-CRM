@@ -130,11 +130,11 @@ Venta nuevaVenta = new Venta();
         int noProducto = Integer.parseInt(jTextFieldNo.getText().trim());
 
 
-        nuevaVenta.setIdClientes(idCliente);  
+        nuevaVenta.setIdCliente(idCliente);  
         nuevaVenta.setPrecio(precioVenta);       
         nuevaVenta.setNoProducto(noProducto);        
 
-        nuevaVenta.GuardarVenta(nuevaVenta);  
+        nuevaVenta.Guardar();  
         
     } catch (NumberFormatException e) {
         
