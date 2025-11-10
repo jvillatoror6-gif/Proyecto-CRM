@@ -93,6 +93,20 @@ public class Venta {
             }
         }
     }
+//    public boolean Eliminar(int id) {
+//    try {
+//        Connection con = DriverManager.getConnection("jdbc:mysql://localhost/crm2", "root", "012003");
+//        String sql = "DELETE FROM ventas WHERE id = ?";
+//        PreparedStatement ps = con.prepareStatement(sql);
+//        ps.setInt(1, id);
+//        int filas = ps.executeUpdate();
+//        con.close();
+//        return filas > 0;
+//    } catch (Exception e) {
+//        System.out.println("Error al eliminar: " + e.getMessage());
+//        return false;
+//    }
+//}
 
     // Método para eliminar una venta (opcional)
     public boolean Eliminar(int idVenta) {

@@ -83,7 +83,7 @@ public class ABCclientes extends javax.swing.JFrame {
 //    }
 
     private void CrearModelo() {
-        String[] nombreColumnas = {"Id", "nombre", "Precio", "Stock", "Categoria"};
+        String[] nombreColumnas = {"Nombre", "Dpi", "Correo", "Telefono"};
         model = new DefaultTableModel(nombreColumnas, 0);
         _Tabla = new JTable(model);
 
@@ -128,7 +128,7 @@ public class ABCclientes extends javax.swing.JFrame {
 
             Statement st = _conexion.createStatement();
             ResultSet rs = st.executeQuery(
-                    "SELECT Id, Nombre, Precio, Stock, Idcategoria FROM categorias ORDER BY Nombre ASC"
+                    "SELECT Nombre, Dpi, Correo, Telefono FROM categorias ORDER BY Nombre ASC"
             );
 
             while (rs.next()) {
@@ -355,9 +355,12 @@ public class ABCclientes extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ABCclientes().setVisible(true));
-    }
+       java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ABCclientes().setVisible(true);
+            }
+        }); /* Create and display the form */
+       }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonGuardar;

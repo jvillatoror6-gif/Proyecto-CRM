@@ -241,9 +241,12 @@ public class Incidentes extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Incidentes().setVisible(true));
-    }
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Incidentes().setVisible(true);
+            }
+        });/* Create and display the form */
+        }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonGuardar;

@@ -35,6 +35,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenuItemCategorias = new javax.swing.JMenuItem();
         jMenuItemIncidente = new javax.swing.JMenuItem();
         jMenuItemCategoriaIncident = new javax.swing.JMenuItem();
+        jMenuItemVentas2 = new javax.swing.JMenuItem();
         jMenuOperaciones = new javax.swing.JMenu();
         jMenuItemLista = new javax.swing.JMenuItem();
         jMenuItemEliminar = new javax.swing.JMenuItem();
@@ -102,6 +103,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
         jMenuCatalogo.add(jMenuItemCategoriaIncident);
+
+        jMenuItemVentas2.setText("Ventas");
+        jMenuItemVentas2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemVentas2ActionPerformed(evt);
+            }
+        });
+        jMenuCatalogo.add(jMenuItemVentas2);
 
         jMenuBar1.add(jMenuCatalogo);
 
@@ -232,6 +241,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
          C.setVisible(true);
     }//GEN-LAST:event_jMenuItemCategoriaIncidentActionPerformed
 
+    private void jMenuItemVentas2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemVentas2ActionPerformed
+        ventas v=new ventas ();
+         v.setLocationRelativeTo(null);
+         v.setVisible(true);
+    }//GEN-LAST:event_jMenuItemVentas2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -278,6 +293,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemLista;
     private javax.swing.JMenuItem jMenuItemProductos;
     private javax.swing.JMenuItem jMenuItemVentas;
+    private javax.swing.JMenuItem jMenuItemVentas2;
     private javax.swing.JMenu jMenuOperaciones;
     // End of variables declaration//GEN-END:variables
 }

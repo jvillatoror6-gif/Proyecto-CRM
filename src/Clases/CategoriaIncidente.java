@@ -54,7 +54,7 @@ private int id;
     
       Connection _conexion = null;
     try {
-        String conexionString ="jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+        String conexionString ="jdbc:mysql://localhost/sys?characterEncoding=latin1";
         String driverName ="com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
         Class.forName(driverName).newInstance();
        _conexion = DriverManager.getConnection(conexionString, "root","012003"); 

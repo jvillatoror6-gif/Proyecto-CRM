@@ -44,42 +44,74 @@ public class AbcProductos extends javax.swing.JFrame {
         CargarTabla();
 
     }
-
     private void CargarComboCategorias() {
+    DefaultComboBoxModel<ComboBox> model = new DefaultComboBoxModel<>();
 
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
+    Connection _conexion = null;
+    try {
+        String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+        String driverName = "com.mysql.cj.jdbc.Driver";
+        Class.forName(driverName).newInstance();
+        _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
-        Connection _conexion = null;
+        Statement st = _conexion.createStatement();
+        ResultSet rs = st.executeQuery("SELECT Id, Nombre FROM categorias ORDER BY Nombre ASC");
+
+        while (rs.next()) {
+            ComboBox c = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
+            model.addElement(c);
+        }
+        rs.close();
+        st.close();
+
+        jComboBoxCategoria.setModel(model);
+
+    } catch (Exception ex) {
+        System.out.println("Error al cargar categorías: " + ex.getMessage());
+    } finally {
         try {
-            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-            String driverName = "com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
-            Class.forName(driverName).newInstance();
-            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
-            Statement st = _conexion.createStatement();
-            ResultSet rs = st.executeQuery("select Id, Nombre from categorias\n"
-                    + "order by Nombre asc");
-            while (rs.next()) {
-
-                ComboBox C = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
-                model.addElement(C);
-                System.out.println("");
-            }
-            rs.close();
-
-            jComboBoxCategoria.setModel(model);
-
-        } catch (Exception ex) {
-            System.out.println("Error" + ex.getMessage());
-
-        } finally {
-            try {
-                _conexion.close();
-            } catch (Exception ex2) {
-            }
+            if (_conexion != null) _conexion.close();
+        } catch (Exception ex2) {
         }
     }
+}
+
+//    private void CargarComboCategorias() {
+//
+//        DefaultComboBoxModel model = new DefaultComboBoxModel();
+//
+//        Connection _conexion = null;
+//        try {
+//            String conexionString = "jdbc:mysql://localhost/sys?characterEncoding=latin1";
+//            String driverName = "com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
+//            Class.forName(driverName).newInstance();
+//            _conexion = DriverManager.getConnection(conexionString, "root", "PAOLO-666");
+//            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+//
+//            Statement st = _conexion.createStatement();
+//            ResultSet rs = st.executeQuery("select Id, Nombre from categorias\n"
+//                    + "order by Nombre asc");
+//            while (rs.next()) {
+//
+//                ComboBox C = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
+//                model.addElement(C);
+//                System.out.println("");
+//            }
+//            rs.close();
+//
+//            jComboBoxCategoria.setModel(model);
+//
+//        } catch (Exception ex) {
+//            System.out.println("Error" + ex.getMessage());
+//
+//        } finally {
+//            try {
+//                _conexion.close();
+//            } catch (Exception ex2) {
+//            }
+//        }
+//    }
 
     private void CrearModelo() {
         String[] nombreColumnas = {"Id", "nombre", "Precio", "Stock", "Categoria"};
@@ -119,10 +151,10 @@ public class AbcProductos extends javax.swing.JFrame {
 //    _model.removeRow(0);
 
         try {
-            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+            String conexionString = "jdbc:mysql://localhost/sys?characterEncoding=latin1";
             String driverName = "com.mysql.cj.jdbc.Driver";
             Class.forName(driverName).newInstance();
-            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+            _conexion = DriverManager.getConnection(conexionString, "root", "PAOLO-666");
             _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             Statement st = _conexion.createStatement();
@@ -186,44 +218,7 @@ public class AbcProductos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No fue Posible", "ERROR", JOptionPane.ERROR_MESSAGE);
 
         }
-        
-
-//        try {
-//            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-//            String driverName = "com.mysql.cj.jdbc.Driver";
-//            Class.forName(driverName).newInstance();
-//            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-//            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-//
-//            Statement st = _conexion.createStatement();
-//
-//            if (id == 0) {
-//                String sql = "INSERT INTO productos (nombre, precio, stock, idcategoria)"
-//                        + "values (" + getNombre() + "', " + getPrecio() + ", " + getStock() + ", " + getIdCategoria() + ")";
-//                st.executeUpdate(sql);
-//            } else {
-//                String sql = "UPDATE productos SET nombre = '" + getNombre()
-//                        + "', precio = " + getPrecio()
-//                        + ", stock = " + getStock()
-//                        + ", idcategoria = " + getIdCategoria()
-//                        + " WHERE idproducto = " + id;
-//                st.executeUpdate(sql);
-//            }
-//            return true;
-//
-//        } catch (Exception ex) {
-//            System.out.println("Error al guardar producto: " + ex.getMessage());
-//            return false;
-//
-//        } finally {
-//            try {
-//                if (_conexion != null && !_conexion.isClosed()) {
-//                    _conexion.close();
-//                }
-//            } catch (Exception e) {
-//                System.out.println("Error al cerrar conexión: " + e.getMessage());
-//            }
-//        }
+       
     }
     private void Eliminar (){
         if (_id !=0){
@@ -411,7 +406,30 @@ public class AbcProductos extends javax.swing.JFrame {
     private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
 
     }//GEN-LAST:event_jButtonEliminarActionPerformed
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
 
+       java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new AbcProductos().setVisible(true);
+            }
+        }); /* Create and display the form */
+       }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonEliminar;
