@@ -44,7 +44,7 @@ public class ventas extends javax.swing.JFrame {
 
     }
 private void CrearModelo() {
-        String[] nombreColumnas = {"id", "No.Producto", "Precio"};
+        String[] nombreColumnas = {"id", "No.Producto","Precio"};
         model = new DefaultTableModel(nombreColumnas, 0);
         _Tabla = new JTable(model);
 

@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseEvent;
-
+import java.sql.PreparedStatement;
 /**
  *
  * @author kenet
@@ -27,94 +27,51 @@ import java.awt.event.MouseEvent;
 public class AbcProductos extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AbcProductos.class.getName());
-    private Object _model;
     private Connection _conexion;
 
     private DefaultTableModel model;
     private JTable _Tabla;
     private int _id;
 
-    /**
-     * Creates new form AbcProductos
-     */
     public AbcProductos() {
         initComponents();
         CargarComboCategorias();
         CrearModelo();
         CargarTabla();
-
     }
+
     private void CargarComboCategorias() {
-    DefaultComboBoxModel<ComboBox> model = new DefaultComboBoxModel<>();
+          DefaultComboBoxModel model = new DefaultComboBoxModel ();
+        Connection _conexion = null;
 
-    Connection _conexion = null;
-    try {
-        String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-        String driverName = "com.mysql.cj.jdbc.Driver";
-        Class.forName(driverName).newInstance();
-        _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
-        Statement st = _conexion.createStatement();
-        ResultSet rs = st.executeQuery("SELECT Id, Nombre FROM categorias ORDER BY Nombre ASC");
-
-        while (rs.next()) {
-            ComboBox c = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
-            model.addElement(c);
-        }
-        rs.close();
-        st.close();
-
-        jComboBoxCategoria.setModel(model);
-
-    } catch (Exception ex) {
-        System.out.println("Error al cargar categorías: " + ex.getMessage());
-    } finally {
         try {
-            if (_conexion != null) _conexion.close();
-        } catch (Exception ex2) {
+            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+            String driverName = "com.mysql.cj.jdbc.Driver";
+            Class.forName(driverName).newInstance();
+            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            Statement st = _conexion.createStatement();
+            ResultSet rs = st.executeQuery("SELECT Id, Nombre FROM categorias ORDER BY Nombre ASC");
+
+            while (rs.next()) {
+                ComboBox c = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
+                model.addElement(c);
+            }
+            rs.close();
+            
+            jComboBoxCategoria.setModel(model);
+
+        } catch (Exception ex) {
+            System.out.println("Error al cargar categorías: " + ex.getMessage());
+        } finally {
+            try {
+                if (_conexion != null) _conexion.close();
+            } catch (Exception ex2) {}
         }
     }
-}
-
-//    private void CargarComboCategorias() {
-//
-//        DefaultComboBoxModel model = new DefaultComboBoxModel();
-//
-//        Connection _conexion = null;
-//        try {
-//            String conexionString = "jdbc:mysql://localhost/sys?characterEncoding=latin1";
-//            String driverName = "com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
-//            Class.forName(driverName).newInstance();
-//            _conexion = DriverManager.getConnection(conexionString, "root", "PAOLO-666");
-//            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-//
-//            Statement st = _conexion.createStatement();
-//            ResultSet rs = st.executeQuery("select Id, Nombre from categorias\n"
-//                    + "order by Nombre asc");
-//            while (rs.next()) {
-//
-//                ComboBox C = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
-//                model.addElement(C);
-//                System.out.println("");
-//            }
-//            rs.close();
-//
-//            jComboBoxCategoria.setModel(model);
-//
-//        } catch (Exception ex) {
-//            System.out.println("Error" + ex.getMessage());
-//
-//        } finally {
-//            try {
-//                _conexion.close();
-//            } catch (Exception ex2) {
-//            }
-//        }
-//    }
 
     private void CrearModelo() {
-        String[] nombreColumnas = {"Id", "nombre", "Precio", "Stock", "Categoria"};
+        String[] nombreColumnas = {"ID", "Nombre", "Precio", "Stock", "Categoría"};
         model = new DefaultTableModel(nombreColumnas, 0);
         _Tabla = new JTable(model);
 
@@ -126,17 +83,10 @@ public class AbcProductos extends javax.swing.JFrame {
                 CargarDatos();
             }
 
-            public void mousePressed(MouseEvent e) {
-            }
-
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            public void mouseExited(MouseEvent e) {
-            }
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
         });
 
         jPanelTabla.removeAll();
@@ -146,88 +96,126 @@ public class AbcProductos extends javax.swing.JFrame {
         jPanelTabla.repaint();
     }
 
-    private void CargarTabla() {
-//    while (_model.getRowCount() > 0){
-//    _model.removeRow(0);
+//    private void CargarTabla() {
+//        model.setRowCount(0); 
+//        try {
+//            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+//            String driverName = "com.mysql.cj.jdbc.Driver";
+//            Class.forName(driverName).newInstance();
+//            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+//            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+//
+//            String sql = "SELECT idProducto, Nombre, Precio, Stock, Idcategoria FROM producto ORDER BY Nombre ASC";
+//            Statement st = _conexion.createStatement();
+//            ResultSet rs = st.executeQuery(sql);
+//
+//            while (rs.next()) {
+//                Object[] fila = {
+//                    rs.getInt("idProducto"),
+//                    rs.getString("Nombre"),
+//                    rs.getDouble("Precio"),
+//                    rs.getInt("Stock"),
+//                    rs.getInt("Idcategoria")
+//                };
+//                model.addRow(fila);
+//            }
+//
+//            rs.close();
+//            st.close();
+//            _conexion.close();
+//
+//            System.out.println("Filas cargadas: " + model.getRowCount()); 
+//        } catch (Exception ex) {
+//            JOptionPane.showMessageDialog(this, "Error al cargar tabla: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        } finally {
+//            try {
+//                if (_conexion != null) _conexion.close();
+//            } catch (Exception e) {}
+//        }
+//    }
+ private void CargarTabla() {
+    model.setRowCount(0); 
+    try {
+        String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+        String driverName = "com.mysql.cj.jdbc.Driver";
+        Class.forName(driverName).newInstance();
+        _conexion = DriverManager.getConnection(conexionString, "root", "012003");
+        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
-        try {
-            String conexionString = "jdbc:mysql://localhost/sys?characterEncoding=latin1";
-            String driverName = "com.mysql.cj.jdbc.Driver";
-            Class.forName(driverName).newInstance();
-            _conexion = DriverManager.getConnection(conexionString, "root", "PAOLO-666");
-            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        String sql = "SELECT idProducto, Nombre, Precio, Stock, Idcategoria FROM producto ORDER BY Nombre ASC";
+        Statement st = _conexion.createStatement();
+        ResultSet rs = st.executeQuery(sql);
 
-            Statement st = _conexion.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "SELECT Id, Nombre, Precio, Stock, Idcategoria FROM categorias ORDER BY Nombre ASC"
-            );
-
-            while (rs.next()) {
-                Vector<Object> producto = new Vector<>();
-                producto.add(rs.getInt("Id"));
-                producto.add(rs.getString("Nombre"));
-                producto.add(rs.getDouble("Precio"));
-                producto.add(rs.getInt("Stock"));
-                producto.add(rs.getInt("Idcategoria"));
-                model.addRow(producto);
-            }
-
-            rs.close();
-            st.close();
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-        } finally {
-            try {
-                if (_conexion != null) {
-                    _conexion.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Error al cerrar conexión: " + e.getMessage());
-            }
+        while (rs.next()) {
+            Object[] fila = {
+                rs.getInt("idProducto"),
+                rs.getString("Nombre"),
+                rs.getDouble("Precio"),
+                rs.getInt("Stock"),
+                rs.getInt("Idcategoria")
+            };
+            model.addRow(fila);
         }
+
+        rs.close();
+        st.close();
+
+        // ✅ ESTA LÍNEA ES LA QUE HACÍA FALTA
+        _Tabla.setModel(model);
+
+        System.out.println("Filas cargadas: " + model.getRowCount()); 
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error al cargar tabla: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        try {
+            if (_conexion != null) _conexion.close();
+        } catch (Exception e) {}
     }
+}
 
     private void CargarDatos() {
-
         try {
-            _id = 0;
             int filaSeleccionada = _Tabla.getSelectedRow();
+            if (filaSeleccionada == -1) return; 
             _id = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
-            String Nombre = _Tabla.getValueAt(filaSeleccionada, 1).toString();
+            String nombre = _Tabla.getValueAt(filaSeleccionada, 1).toString();
             String precio = _Tabla.getValueAt(filaSeleccionada, 2).toString();
-            int stock = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 3).toString());
-            int idCategoria = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 4).toString());
-            String categoria = _Tabla.getValueAt(filaSeleccionada, 4).toString();
-            ComboBox categoriaSeleccionada = new ComboBox(idCategoria, categoria);
-            jTextFieldNombre.setText(Nombre);
+            String stock = _Tabla.getValueAt(filaSeleccionada, 3).toString();
+
+            jTextFieldNombre.setText(nombre);
             jFormattedTextFieldPrecio.setText(precio);
-            jFormattedTextFieldStock.setText(String.valueOf(stock));
-            jComboBoxCategoria.getModel().setSelectedItem(categoriaSeleccionada);
+            jFormattedTextFieldStock.setText(stock);
+
         } catch (Exception ex) {
-            System.out.println("ERROR " + ex.getMessage());
+            System.out.println("ERROR al cargar datos: " + ex.getMessage());
         }
     }
 
     public void Guardar(int id) {
-//        Connection _conexion = null;
-        Producto producto = new Producto();
-        if (producto.Guardar()) {
-            JOptionPane.showMessageDialog(this, "Producto guardado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            Producto producto = new Producto();
+            producto.setNombre(jTextFieldNombre.getText());
+            producto.setPrecio(Double.parseDouble(jFormattedTextFieldPrecio.getText()));
+            producto.setStock(Integer.parseInt(jFormattedTextFieldStock.getText()));
 
-        } else {
-            JOptionPane.showMessageDialog(this, "No fue Posible", "ERROR", JOptionPane.ERROR_MESSAGE);
+            ComboBox categoriaSeleccionada = (ComboBox) jComboBoxCategoria.getSelectedItem();
+            producto.setIdcategoria(categoriaSeleccionada.getId());
 
-        }
-       
-    }
-    private void Eliminar (){
-        if (_id !=0){
-            int o = JOptionPane.showConfirmDialog(this, "Seguro que lo eliminara?", "Advertencia", JOptionPane.YES_NO_OPTION);
-            if (o==0){
-                
+            if (producto.Guardar()) {
+                JOptionPane.showMessageDialog(this, "Producto guardado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+
+                CargarTabla();
+
+                jTextFieldNombre.setText("");
+                jFormattedTextFieldPrecio.setText("");
+                jFormattedTextFieldStock.setText("");
+                jComboBoxCategoria.setSelectedIndex(0);
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al guardar producto", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }else {
-            JOptionPane.showMessageDialog(this, "Seleccione el producto a eliminar", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -284,6 +272,12 @@ public class AbcProductos extends javax.swing.JFrame {
         jComboBoxCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxCategoriaActionPerformed(evt);
+            }
+        });
+
+        jPanelTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanelTablaMouseClicked(evt);
             }
         });
 
@@ -374,24 +368,23 @@ public class AbcProductos extends javax.swing.JFrame {
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
         Producto P = new Producto();
-        P.setNombre(jTextFieldNombre.getText());
-        P.setStock(((Number) jFormattedTextFieldStock.getValue()).intValue());
-        P.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
-        P.setIdcategoria(((ComboBox) jComboBoxCategoria.getSelectedItem()).getId());
+P.setNombre(jTextFieldNombre.getText());
+P.setStock(((Number) jFormattedTextFieldStock.getValue()).intValue());
+P.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
+P.setIdcategoria(((ComboBox) jComboBoxCategoria.getSelectedItem()).getId());
 
-        if (P.Guardar()) {
-            int _id = 0;
-            jTextFieldNombre.setText("");
-            jFormattedTextFieldStock.setValue(null);
-            jFormattedTextFieldPrecio.setValue(null);
-            jFormattedTextFieldPrecio.setValue(null);
-            jComboBoxCategoria.setSelectedIndex(-1);
+if (P.Guardar()) {
+    jTextFieldNombre.setText("");
+    jFormattedTextFieldStock.setValue(null);
+    jFormattedTextFieldPrecio.setValue(null);
+    jComboBoxCategoria.setSelectedIndex(-1);
 
-            JOptionPane.showMessageDialog(this, "Producto creado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(this, "Producto creado", "Información", JOptionPane.INFORMATION_MESSAGE);
+    CargarTabla(); // <-- IMPORTANTE para ver el nuevo producto en la tabla
 
-        } else {
-            JOptionPane.showMessageDialog(this, "No fue posible crear el producto ", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+} else {
+    JOptionPane.showMessageDialog(this, "No fue posible crear el producto", "Error", JOptionPane.ERROR_MESSAGE);
+}
 
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 
@@ -404,8 +397,48 @@ public class AbcProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxCategoriaActionPerformed
 
     private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
+int filaSeleccionada = _Tabla.getSelectedRow();  
 
+    if (filaSeleccionada == -1) {
+        JOptionPane.showMessageDialog(this, "Seleccione un producto en la tabla para eliminar.");
+        return;
+    }
+
+    // Obtener el ID del producto (columna 0)
+    int idProducto = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
+
+    // Confirmar eliminación
+    int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Seguro que desea eliminar el producto con ID " + idProducto + "?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION
+    );
+
+    if (confirmacion == JOptionPane.YES_OPTION) {
+        try {
+            // Crear objeto producto
+            Producto producto = new Producto();
+            
+            // Llamar al método Eliminar de la clase Producto
+            boolean eliminado = producto.Eliminar(idProducto);
+
+            if (eliminado) {
+                JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+                CargarTabla(); // refresca los datos en la tabla
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró el producto en la base de datos.");
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
+        }
+    }
     }//GEN-LAST:event_jButtonEliminarActionPerformed
+
+    private void jPanelTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelTablaMouseClicked
+        
+    }//GEN-LAST:event_jPanelTablaMouseClicked
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

@@ -168,6 +168,9 @@
       </AuxValues>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanelTabla">
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jPanelTablaMouseClicked"/>
+      </Events>
 
       <Layout>
         <DimensionLayout dim="0">

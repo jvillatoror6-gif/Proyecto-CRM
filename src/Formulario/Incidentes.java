@@ -28,48 +28,49 @@ public class Incidentes extends javax.swing.JFrame {
      */
     public Incidentes() {
         initComponents();
-//        CargarComboCategoriasIncidentes();
+        
+        CargarComboCategoriasIncidentes();
     }
-//private void CargarComboCategoriasIncidentes(){
-//    
-//        DefaultComboBoxModel model = new DefaultComboBoxModel ();
-//    
-//    Connection _conexion = null;
-//    try {
-//        String conexionString ="jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-//        String driverName ="com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
-//        Class.forName(driverName).newInstance();
-//       _conexion = DriverManager.getConnection(conexionString, "root","012003"); 
-//       _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-//      
-//       Statement st = _conexion.createStatement();
-//       ResultSet rs = st.executeQuery ("select Id, Nombre from categorias\n" +
-//                   "order by Nombre asc");
-//       while (rs.next()){
+private void CargarComboCategoriasIncidentes(){
+    
+        DefaultComboBoxModel model = new DefaultComboBoxModel ();
+    
+    Connection _conexion = null;
+    try {
+        String conexionString ="jdbc:mysql://localhost/crm2?characterEncoding=latin1";
+        String driverName ="com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
+        Class.forName(driverName).newInstance();
+       _conexion = DriverManager.getConnection(conexionString, "root","012003"); 
+       _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+      
+       Statement st = _conexion.createStatement();
+       ResultSet rs = st.executeQuery ("select Id, Nombre from categorias\n" +
+                   "order by Nombre asc");
+       while (rs.next()){
+           
+           ComboBox C =new ComboBox(rs.getInt("Id"),rs.getString("Nombre"));
+           model.addElement(C);
+           
 //           
-//           ComboBox C =new ComboBox(rs.getInt("Id"),rs.getString("IdCategoria"));
-//           model.addElement(C);
-//           
-////           
-////           System.out.println(rs.getInt("Idcategoria"));
-////           System.out.println(rs.getString("Nombre"));
-////           System.out.println("");
-//       }
-//      // System.out.println("Conexion exitosa!!!");
-//    rs.close();
-//    
-//    jComboBoxIdCategoria.setModel(model);
-//            
-//    }catch (Exception ex){ 
-//        System.out.println("Error" + ex.getMessage());
-//    
-//    }finally {
-//        try {
-//        _conexion.close();
-//   }catch (Exception ex2){   
-//   }        
-//} 
-//    }
+//           System.out.println(rs.getInt("Idcategoria"));
+//           System.out.println(rs.getString("Nombre"));
+//           System.out.println("");
+       }
+      // System.out.println("Conexion exitosa!!!");
+    rs.close();
+    
+    jComboBoxIdCategoria.setModel(model);
+            
+    }catch (Exception ex){ 
+        System.out.println("Error" + ex.getMessage());
+    
+    }finally {
+        try {
+        _conexion.close();
+   }catch (Exception ex2){   
+   }        
+} 
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -144,14 +145,16 @@ public class Incidentes extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButtonGuardar)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(25, 25, 25)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextFieldIDIncidentes)
@@ -162,7 +165,7 @@ public class Incidentes extends javax.swing.JFrame {
                         .addComponent(jComboBoxIdCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
                         .addComponent(jPanelTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
