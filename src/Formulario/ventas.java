@@ -141,7 +141,7 @@ private void CrearModelo() {
 
     public void Guardar(int id) {
 //        Connection _conexion = null;
-        Producto producto = new Producto();
+        Producto producto = new Producto(_id);
         if (producto.Guardar()) {
             JOptionPane.showMessageDialog(this, "Producto guardado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 

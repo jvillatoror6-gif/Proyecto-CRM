@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -26,88 +27,35 @@ import javax.swing.table.DefaultTableModel;
  * @author ASUS
  */
 public class ABCclientes extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ABCclientes.class.getName());
-    private Object _model;
-    private Connection _conexion;
 
-    private DefaultTableModel model;
+    private DefaultTableModel _model;
     private JTable _Tabla;
     private int _id;
+    private Clientes _cliente = null; // antes era Producto
 
-    /**
-     * Creates new form AbcProductos
-     */
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ABCclientes.class.getName());
+
     public ABCclientes() {
         initComponents();
-//        CargarComboCategorias();
+        _cliente = new Clientes(); // se inicializa correctamente
         CrearModelo();
         CargarTabla();
-
     }
 
-//    private void CargarComboCategorias() {
-//
-//        DefaultComboBoxModel model = new DefaultComboBoxModel();
-//
-//        Connection _conexion = null;
-//        try {
-//            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-//            String driverName = "com.mysql.cj.jdbc.Driver";  //com.mysql.jdbc.Driver;
-//            Class.forName(driverName).newInstance();
-//            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-//            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-//
-//            Statement st = _conexion.createStatement();
-//            ResultSet rs = st.executeQuery("select Id, Nombre from categorias\n"
-//                    + "order by Nombre asc");
-//            while (rs.next()) {
-//
-//                ComboBox C = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
-//                model.addElement(C);
-//                System.out.println("");
-//            }
-//            rs.close();
-//
-////            jComboBoxCategoriaIncidente.setModel(model);
-//
-//        } catch (Exception ex) {
-//            System.out.println("Error" + ex.getMessage());
-//
-//        } finally {
-//            try {
-//                _conexion.close();
-//            } catch (Exception ex2) {
-//            }
-//        }
-//    }
-
     private void CrearModelo() {
-        String[] nombreColumnas = {"Nombre", "DPI", "Correo", "Telefono"};
-        model = new DefaultTableModel(nombreColumnas, 0);
-        _Tabla = new JTable(model);
-
+        String[] nombreColumnas = {"Id", "Nombre", "DPI", "Correo", "Teléfono"};
+        _model = new DefaultTableModel(nombreColumnas, 0);
+        _Tabla = new JTable(_model);
         JScrollPane scroll = new JScrollPane(_Tabla);
 
-        _Tabla.addMouseListener(new MouseListener() {
+        _Tabla.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
                 CargarDatos();
-            }
-
-            public void mousePressed(MouseEvent e) {
-            }
-
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            public void mouseExited(MouseEvent e) {
             }
         });
 
+        // Limpiar el panel antes
         jPanelTabla.removeAll();
         jPanelTabla.setLayout(new java.awt.BorderLayout());
         jPanelTabla.add(scroll, java.awt.BorderLayout.CENTER);
@@ -116,88 +64,101 @@ public class ABCclientes extends javax.swing.JFrame {
     }
 
     private void CargarTabla() {
-//    while (_model.getRowCount() > 0){
-//    _model.removeRow(0);
+        while (_model.getRowCount() > 0) {
+            _model.removeRow(0);
+        }
 
         try {
-            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-            String driverName = "com.mysql.cj.jdbc.Driver";
-            Class.forName(driverName).newInstance();
-            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
-            Statement st = _conexion.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "SELECT Nombre, DPI, Correo, Telefono FROM categorias ORDER BY Nombre ASC"
-            );
-
+            ResultSet rs = _cliente.ObtenerClientes(); // Cambiado a clientes
             while (rs.next()) {
                 Vector<Object> cliente = new Vector<>();
-                cliente.add(rs.getString("Nombre"));
-                cliente.add(rs.getInt("DPI"));
-                cliente.add(rs.getString("Correo"));
-                cliente.add(rs.getString("Telefono"));
-//                producto.add(rs.getInt("Idcategoria"));
-                model.addRow(cliente);
+                cliente.add(rs.getInt("idcliente"));
+                cliente.add(rs.getString("nombre"));
+                cliente.add(rs.getString("dpi"));
+                cliente.add(rs.getString("correo"));
+                cliente.add(rs.getString("telefono"));
+                _model.addRow(cliente);
             }
-
             rs.close();
-            st.close();
         } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-        } finally {
-            try {
-                if (_conexion != null) {
-                    _conexion.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Error al cerrar conexión: " + e.getMessage());
-            }
+            System.out.println("Error al cargar tabla: " + ex.getMessage());
         }
     }
 
     private void CargarDatos() {
+        _id = 0;
+        try {
+            int filaSeleccionada = _Tabla.getSelectedRow();
+            if (filaSeleccionada >= 0) {
+                _id = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
+                String nombre = _Tabla.getValueAt(filaSeleccionada, 1).toString();
+                String dpi = _Tabla.getValueAt(filaSeleccionada, 2).toString();
+                String correo = _Tabla.getValueAt(filaSeleccionada, 3).toString();
+                String telefono = _Tabla.getValueAt(filaSeleccionada, 4).toString();
+
+                jTextFieldNombre.setText(nombre);
+                jTextFieldDPI.setText(dpi);
+                jTextFieldCorreo.setText(correo);
+                jTextFieldTelefono.setText(telefono);
+            }
+        } catch (Exception ex) {
+            System.out.println("Error al seleccionar fila: " + ex.getMessage());
+        }
+    }
+
+    private void Actualizar() {
+        if (_id == 0) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un cliente de la tabla", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         try {
-            _id = 0;
-            int filaSeleccionada = _Tabla.getSelectedRow();
-            //_id = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
-            String Nombre = _Tabla.getValueAt(filaSeleccionada, 1).toString();
-            String Dpi = _Tabla.getValueAt(filaSeleccionada, 2).toString();
-            String Correo = _Tabla.getValueAt(filaSeleccionada, 3).toString();//Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 3).toString());
-            String Telefono = _Tabla.getValueAt(filaSeleccionada, 4).toString();//Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 4).toString());
-//            String categoria = _Tabla.getValueAt(filaSeleccionada, 4).toString();
-//            ComboBox categoriaSeleccionada = new ComboBox(idCategoria, categoria);
-            jTextFieldNombre.setText(Nombre);
-            jTextFieldDPI.setText(Dpi);//jFormattedTextFieldPrecio.setText(precio);
-            jTextFieldCorreo.setText(Correo);//jFormattedTextFieldStock.setText(String.valueOf(stock));
-            jTextFieldTelefono.setText(Telefono);//jComboBoxCategoria.getModel().setSelectedItem(categoriaSeleccionada);
-        } catch (Exception ex) {
-            System.out.println("ERROR " + ex.getMessage());
-        }
-    }
+            Clientes cliente = new Clientes(_id);
+            cliente.setNombre(jTextFieldNombre.getText());
+            cliente.setDpi(jTextFieldDPI.getText());
+            cliente.setCorreo(jTextFieldCorreo.getText());
+            cliente.setTelefono(jTextFieldTelefono.getText());
 
-    public void Guardar(int id) {
-//        Connection _conexion = null;
-        Producto producto = new Producto();
-        if (producto.Guardar()) {
-            JOptionPane.showMessageDialog(this, "Producto guardado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
-
-        } else {
-            JOptionPane.showMessageDialog(this, "No fue Posible", "ERROR", JOptionPane.ERROR_MESSAGE);
-
-        }
-    }
-    private void Eliminar (){
-        if (_id !=0){
-            int o = JOptionPane.showConfirmDialog(this, "Seguro que lo eliminara?", "Advertencia", JOptionPane.YES_NO_OPTION);
-            if (o==0){
-                
+            if (cliente.Guardar(_id)) {
+                JOptionPane.showMessageDialog(this, "Cliente actualizado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+                LimpiarCampos();
+                CargarTabla();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar el cliente", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }else {
-            JOptionPane.showMessageDialog(this, "Seleccione el producto a eliminar", "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        } catch (Exception ex) {
+            System.out.println("Error al actualizar: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al actualizar el cliente", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }    /**
+    }
+
+    private void Eliminar() {
+        if (_id != 0) {
+            int o = JOptionPane.showConfirmDialog(this, "¿Está seguro que desea eliminar este cliente?", "Advertencia", JOptionPane.YES_NO_OPTION);
+            if (o == JOptionPane.YES_OPTION) {
+                Clientes cliente = new Clientes(_id);
+                if (cliente.Eliminar(_id)) { // corregido: antes llamaba a _producto
+                    JOptionPane.showMessageDialog(this, "El cliente se eliminó correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+                    CargarTabla();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al eliminar el cliente", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un cliente para eliminar", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void LimpiarCampos() {
+        jTextFieldNombre.setText("");
+        jTextFieldDPI.setText("");
+        jTextFieldCorreo.setText("");
+        jTextFieldTelefono.setText("");
+        _id = 0;
+    }
+
+   /**
      * Creates new form ABCclientes
      */
     
@@ -222,6 +183,8 @@ public class ABCclientes extends javax.swing.JFrame {
         jTextFieldTelefono = new javax.swing.JTextField();
         jButtonGuardar = new javax.swing.JButton();
         jPanelTabla = new javax.swing.JPanel();
+        jButtonActualizar = new javax.swing.JButton();
+        jButtonEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -253,6 +216,20 @@ public class ABCclientes extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jButtonActualizar.setText("Actualizar");
+        jButtonActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonActualizarActionPerformed(evt);
+            }
+        });
+
+        jButtonEliminar.setText("Eliminar");
+        jButtonEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -264,25 +241,29 @@ public class ABCclientes extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jTextFieldCorreo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-                            .addComponent(jTextFieldDPI, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldNombre, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldTelefono))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtonActualizar)
+                                .addGap(68, 68, 68)
+                                .addComponent(jButtonGuardar)
+                                .addGap(42, 42, 42)
+                                .addComponent(jButtonEliminar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(28, 28, 28)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jTextFieldCorreo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                                    .addComponent(jTextFieldDPI, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldNombre, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldTelefono))))
                         .addGap(82, 82, 82)
                         .addComponent(jPanelTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 44, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(217, 217, 217)
-                .addComponent(jButtonGuardar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -308,7 +289,10 @@ public class ABCclientes extends javax.swing.JFrame {
                     .addComponent(jTextFieldTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(28, 28, 28)
-                .addComponent(jButtonGuardar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonGuardar)
+                    .addComponent(jButtonActualizar)
+                    .addComponent(jButtonEliminar))
                 .addGap(47, 47, 47))
         );
 
@@ -316,23 +300,47 @@ public class ABCclientes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
-       Clientes c =new Clientes ();
-      c.setNombre(jTextFieldNombre.getText());
-      c.setDpi(jTextFieldDPI.getText());
-      c.setCorreo(jTextFieldCorreo.getText());
-      c.setTelefono(jTextFieldTelefono.getText());
-      
-      if (c.Guardar()){
-      jTextFieldNombre.setText("");
-
- JOptionPane.showMessageDialog(this, "Cliente creado ","Informacion",JOptionPane.INFORMATION_MESSAGE);
-    
-     } else 
-          JOptionPane.showMessageDialog(this, " No fue posoble crear el cliente ","Error",JOptionPane.ERROR_MESSAGE);
-                                                 
+       Guardar();                                          
                                                  
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 
+    private void jButtonActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActualizarActionPerformed
+    Actualizar();        
+    }//GEN-LAST:event_jButtonActualizarActionPerformed
+
+    private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
+        Eliminar();
+    }//GEN-LAST:event_jButtonEliminarActionPerformed
+    private void LimpiarVariables() {
+        _id=0;
+        
+        // Limpia los campos
+        jTextFieldNombre.setText("");
+        jTextFieldDPI.setText("");
+        jTextFieldCorreo.setText("");
+        jTextFieldTelefono.setText("");
+        
+        JOptionPane.showMessageDialog(rootPane, "Producto guardado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+        
+        // Actualiza la tabla después de guardar
+        _model.setRowCount(0);  // Limpia las filas actuales
+        CargarTabla();          // Carga los datos actualizados desde la BD
+    }
+
+    private void Guardar() {
+    Clientes cliente = new Clientes(_id);
+    cliente.setNombre(jTextFieldNombre.getText());   
+    cliente.setDpi(jTextFieldDPI.getText());
+    cliente.setNombre(jTextFieldCorreo.getText());
+    cliente.setNombre(jTextFieldTelefono.getText());
+    
+    
+    if (cliente.Guardar(_id)) {
+        LimpiarVariables();
+    } 
+    else {
+        JOptionPane.showMessageDialog(rootPane, "No fue posible guardar el producto", "Error", JOptionPane.ERROR_MESSAGE);}
+    }
     /**
      * @param args the command line arguments
      */
@@ -362,6 +370,8 @@ public class ABCclientes extends javax.swing.JFrame {
        }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonActualizar;
+    private javax.swing.JButton jButtonEliminar;
     private javax.swing.JButton jButtonGuardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;

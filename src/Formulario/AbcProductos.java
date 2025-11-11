@@ -2,6 +2,7 @@ package Formulario;
 
 import Clases.ComboBox;
 import Clases.Producto;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,198 +27,196 @@ import java.sql.PreparedStatement;
  */
 public class AbcProductos extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AbcProductos.class.getName());
-    private Connection _conexion;
-
-    private DefaultTableModel model;
+    private DefaultTableModel _model;
     private JTable _Tabla;
     private int _id;
+    private Producto _producto=null;
 
+    
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AbcProductos.class.getName());
+
+    /**
+     * Creates new form AbcProductos
+     */
     public AbcProductos() {
         initComponents();
+        _producto=new Producto(_id);
         CargarComboCategorias();
         CrearModelo();
         CargarTabla();
     }
-
-    private void CargarComboCategorias() {
-          DefaultComboBoxModel model = new DefaultComboBoxModel ();
+    
+    private void CargarComboCategorias(){
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
         Connection _conexion = null;
-
-        try {
-            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-            String driverName = "com.mysql.cj.jdbc.Driver";
-            Class.forName(driverName).newInstance();
-            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            Statement st = _conexion.createStatement();
-            ResultSet rs = st.executeQuery("SELECT Id, Nombre FROM categorias ORDER BY Nombre ASC");
-
-            while (rs.next()) {
-                ComboBox c = new ComboBox(rs.getInt("Id"), rs.getString("Nombre"));
-                model.addElement(c);
-            }
-            rs.close();
-            
-            jComboBoxCategoria.setModel(model);
-
-        } catch (Exception ex) {
-            System.out.println("Error al cargar categorías: " + ex.getMessage());
+        try{
+           String conexionString = "jdbc:mysql://localhost/crm?characterEncoding=latin1"; 
+           String driverName = "com.mysql.cj.jdbc.Driver";
+           Class.forName(driverName).newInstance();
+           _conexion = DriverManager.getConnection(conexionString,"proyectofinal","012003");
+           _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+           Statement st = _conexion.createStatement();
+           ResultSet rs = st.executeQuery("select idcategoriaproducto, nombre from categoriaproducto order by nombre asc");
+           
+           while (rs.next()){
+               ComboBox c = new ComboBox(rs.getInt("idcategoriaproducto"), rs.getString("nombre"));
+               model.addElement(c);
+           }
+           rs.close();
+           st.close();
+           jComboBoxCategoria.setModel(model);
+        }
+        catch(Exception ex){
+            System.out.println("Error: "+ex.getMessage());
         } finally {
-            try {
-                if (_conexion != null) _conexion.close();
-            } catch (Exception ex2) {}
+            try { if (_conexion != null) _conexion.close(); } catch (Exception ex2){}
         }
     }
-
-    private void CrearModelo() {
-        String[] nombreColumnas = {"ID", "Nombre", "Precio", "Stock", "Categoría"};
-        model = new DefaultTableModel(nombreColumnas, 0);
-        _Tabla = new JTable(model);
-
+    
+    private void CrearModelo(){
+               String[] nombreColumnas = {"Id", "Nombre", "Precio", "Stock","idcategoriaproducto", "Categoria"};
+        _model = new DefaultTableModel(nombreColumnas, 0);
+        _Tabla = new JTable(_model);
         JScrollPane scroll = new JScrollPane(_Tabla);
 
-        _Tabla.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                CargarDatos();
-            }
+        
+       _Tabla.addMouseListener(new MouseListener() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            CargarDatos();
+    }
+        @Override
+        public void mousePressed(MouseEvent e) {}
 
-            public void mousePressed(MouseEvent e) {}
-            public void mouseReleased(MouseEvent e) {}
-            public void mouseEntered(MouseEvent e) {}
-            public void mouseExited(MouseEvent e) {}
-        });
+        @Override
+        public void mouseReleased(MouseEvent e) {}
+    
+        @Override
+        public void mouseEntered(MouseEvent e) {}
+    
+        @Override
+        public void mouseExited(MouseEvent e) {}
+    });
+       
+         // Elimina la columna de idCategoria
+        if (_Tabla.getColumnModel().getColumnCount() > 4) {
+            _Tabla.getColumnModel().getColumn(4).setMinWidth(0);
+            _Tabla.getColumnModel().getColumn(4).setMaxWidth(0);
+            _Tabla.getColumnModel().getColumn(4).setWidth(0);
+        }
+        
 
+        //limpiar el panel antes
         jPanelTabla.removeAll();
+
+        //Usa un layout adecuado
         jPanelTabla.setLayout(new java.awt.BorderLayout());
+
+        //Agrega la tabla dentro del panel
         jPanelTabla.add(scroll, java.awt.BorderLayout.CENTER);
+
+        //Actualiza el panel en pantalla
         jPanelTabla.revalidate();
         jPanelTabla.repaint();
+
     }
 
-//    private void CargarTabla() {
-//        model.setRowCount(0); 
-//        try {
-//            String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-//            String driverName = "com.mysql.cj.jdbc.Driver";
-//            Class.forName(driverName).newInstance();
-//            _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-//            _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-//
-//            String sql = "SELECT idProducto, Nombre, Precio, Stock, Idcategoria FROM producto ORDER BY Nombre ASC";
-//            Statement st = _conexion.createStatement();
-//            ResultSet rs = st.executeQuery(sql);
-//
-//            while (rs.next()) {
-//                Object[] fila = {
-//                    rs.getInt("idProducto"),
-//                    rs.getString("Nombre"),
-//                    rs.getDouble("Precio"),
-//                    rs.getInt("Stock"),
-//                    rs.getInt("Idcategoria")
-//                };
-//                model.addRow(fila);
-//            }
-//
-//            rs.close();
-//            st.close();
-//            _conexion.close();
-//
-//            System.out.println("Filas cargadas: " + model.getRowCount()); 
-//        } catch (Exception ex) {
-//            JOptionPane.showMessageDialog(this, "Error al cargar tabla: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//        } finally {
-//            try {
-//                if (_conexion != null) _conexion.close();
-//            } catch (Exception e) {}
-//        }
-//    }
- private void CargarTabla() {
-    model.setRowCount(0); 
+        
+    private void CargarTabla(){
+        while(_model.getRowCount()>0){
+            _model.removeRow(0);
+        }
+        try {
+            ResultSet rs= _producto.ObtenerProductos();
+           while (rs.next()){
+               Vector producto = new Vector ();
+               producto.add(rs.getInt("idproducto"));
+               producto.add(rs.getString("nombre"));
+               producto.add(rs.getDouble("precio"));
+               producto.add(rs.getInt("stock"));
+               producto.add(rs.getInt("idcategoriaproducto"));
+               producto.add(rs.getString("categoria"));
+
+               _model.addRow(producto);
+           }
+           rs.close();
+        } catch (Exception ex) {
+            System.out.println("Error al cargar tabla: " + ex.getMessage());
+    }
+    }
+    
+    private void CargarDatos(){
+        _id=0;
+        jComboBoxCategoria.setSelectedIndex(0);
+        try{
+            int filaSeleccionada= _Tabla.getSelectedRow();
+        _id = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
+        String nombre = _Tabla.getValueAt(filaSeleccionada,1).toString();
+        String precio = _Tabla.getValueAt(filaSeleccionada,2).toString();
+        String stock= _Tabla.getValueAt(filaSeleccionada,3).toString();
+        int idCategoria= Integer.parseInt( _Tabla.getValueAt(filaSeleccionada,4).toString());
+        String categoria= _Tabla.getValueAt(filaSeleccionada,5).toString();
+        ComboBox categoriaSeleccionada= new ComboBox(idCategoria, categoria);
+        jComboBoxCategoria.getModel().setSelectedItem(categoriaSeleccionada);
+        jTextFieldNombre.setText(nombre);
+        jFormattedTextFieldPrecio.setText(precio);
+        jFormattedTextFieldStock.setText(stock);
+        
+        }catch(Exception ex){
+            System.out.println("Error al seleccionar fila: " +ex.getMessage());
+        }
+           
+    }
+    
+     // Metodo para actulizar datos 
+    private void Actualizar() {
+    if (_id == 0) {
+        JOptionPane.showMessageDialog(this, "Debe seleccionar un producto de la tabla", "Aviso", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
     try {
-        String conexionString = "jdbc:mysql://localhost/crm2?characterEncoding=latin1";
-        String driverName = "com.mysql.cj.jdbc.Driver";
-        Class.forName(driverName).newInstance();
-        _conexion = DriverManager.getConnection(conexionString, "root", "012003");
-        _conexion.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        Producto producto = new Producto(_id);
+        producto.setNombre(jTextFieldNombre.getText());
+        producto.setStock(((Number) jFormattedTextFieldStock.getValue()).intValue());
+        producto.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
 
-        String sql = "SELECT idProducto, Nombre, Precio, Stock, Idcategoria FROM producto ORDER BY Nombre ASC";
-        Statement st = _conexion.createStatement();
-        ResultSet rs = st.executeQuery(sql);
+        ComboBox c = (ComboBox) jComboBoxCategoria.getSelectedItem();
+        producto.setIdcategoria(c.getId());
 
-        while (rs.next()) {
-            Object[] fila = {
-                rs.getInt("idProducto"),
-                rs.getString("Nombre"),
-                rs.getDouble("Precio"),
-                rs.getInt("Stock"),
-                rs.getInt("Idcategoria")
-            };
-            model.addRow(fila);
+        if (producto.Guardar(_id)) {
+            JOptionPane.showMessageDialog(this, "Producto actualizado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+            LimpiarVariables();
+            CargarTabla();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al actualizar el producto", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        rs.close();
-        st.close();
-
-        // ✅ ESTA LÍNEA ES LA QUE HACÍA FALTA
-        _Tabla.setModel(model);
-
-        System.out.println("Filas cargadas: " + model.getRowCount()); 
     } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Error al cargar tabla: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    } finally {
-        try {
-            if (_conexion != null) _conexion.close();
-        } catch (Exception e) {}
+        System.out.println("Error al actualizar: " + ex.getMessage());
+        JOptionPane.showMessageDialog(this, "Error al actualizar el producto", "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
 
-    private void CargarDatos() {
-        try {
-            int filaSeleccionada = _Tabla.getSelectedRow();
-            if (filaSeleccionada == -1) return; 
-            _id = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
-            String nombre = _Tabla.getValueAt(filaSeleccionada, 1).toString();
-            String precio = _Tabla.getValueAt(filaSeleccionada, 2).toString();
-            String stock = _Tabla.getValueAt(filaSeleccionada, 3).toString();
-
-            jTextFieldNombre.setText(nombre);
-            jFormattedTextFieldPrecio.setText(precio);
-            jFormattedTextFieldStock.setText(stock);
-
-        } catch (Exception ex) {
-            System.out.println("ERROR al cargar datos: " + ex.getMessage());
-        }
-    }
-
-    public void Guardar(int id) {
-        try {
-            Producto producto = new Producto();
-            producto.setNombre(jTextFieldNombre.getText());
-            producto.setPrecio(Double.parseDouble(jFormattedTextFieldPrecio.getText()));
-            producto.setStock(Integer.parseInt(jFormattedTextFieldStock.getText()));
-
-            ComboBox categoriaSeleccionada = (ComboBox) jComboBoxCategoria.getSelectedItem();
-            producto.setIdcategoria(categoriaSeleccionada.getId());
-
-            if (producto.Guardar()) {
-                JOptionPane.showMessageDialog(this, "Producto guardado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
-
+   
+    private void Eliminar() {
+    if (_id != 0) {
+        int o = JOptionPane.showConfirmDialog(this, "¿Está seguro que desea eliminar este producto?", "Advertencia", JOptionPane.YES_NO_OPTION);
+        if (o == JOptionPane.YES_OPTION) {
+            Producto producto = new Producto(_id);
+            if (_producto.Eliminar(_id)) {
+                JOptionPane.showMessageDialog(this, "El producto se eliminó correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
                 CargarTabla();
-
-                jTextFieldNombre.setText("");
-                jFormattedTextFieldPrecio.setText("");
-                jFormattedTextFieldStock.setText("");
-                jComboBoxCategoria.setSelectedIndex(0);
-
             } else {
-                JOptionPane.showMessageDialog(this, "Error al guardar producto", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al eliminar el producto", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } else {
+        JOptionPane.showMessageDialog(this, "Debe seleccionar un producto para eliminar", "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -240,6 +239,7 @@ public class AbcProductos extends javax.swing.JFrame {
         jComboBoxCategoria = new javax.swing.JComboBox<>();
         jPanelTabla = new javax.swing.JPanel();
         jButtonEliminar = new javax.swing.JButton();
+        jButtonActualizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -299,20 +299,33 @@ public class AbcProductos extends javax.swing.JFrame {
             }
         });
 
+        jButtonActualizar.setText("Actualizar");
+        jButtonActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonActualizarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(27, 27, 27)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(27, 27, 27))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButtonActualizar)
+                        .addGap(3, 3, 3)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -355,7 +368,8 @@ public class AbcProductos extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonGuardar)
-                    .addComponent(jButtonEliminar))
+                    .addComponent(jButtonEliminar)
+                    .addComponent(jButtonActualizar))
                 .addContainerGap(46, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -367,25 +381,7 @@ public class AbcProductos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
-        Producto P = new Producto();
-P.setNombre(jTextFieldNombre.getText());
-P.setStock(((Number) jFormattedTextFieldStock.getValue()).intValue());
-P.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
-P.setIdcategoria(((ComboBox) jComboBoxCategoria.getSelectedItem()).getId());
-
-if (P.Guardar()) {
-    jTextFieldNombre.setText("");
-    jFormattedTextFieldStock.setValue(null);
-    jFormattedTextFieldPrecio.setValue(null);
-    jComboBoxCategoria.setSelectedIndex(-1);
-
-    JOptionPane.showMessageDialog(this, "Producto creado", "Información", JOptionPane.INFORMATION_MESSAGE);
-    CargarTabla(); // <-- IMPORTANTE para ver el nuevo producto en la tabla
-
-} else {
-    JOptionPane.showMessageDialog(this, "No fue posible crear el producto", "Error", JOptionPane.ERROR_MESSAGE);
-}
-
+        Guardar();
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 
     private void jFormattedTextFieldPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextFieldPrecioActionPerformed
@@ -397,48 +393,47 @@ if (P.Guardar()) {
     }//GEN-LAST:event_jComboBoxCategoriaActionPerformed
 
     private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
-int filaSeleccionada = _Tabla.getSelectedRow();  
-
-    if (filaSeleccionada == -1) {
-        JOptionPane.showMessageDialog(this, "Seleccione un producto en la tabla para eliminar.");
-        return;
-    }
-
-    // Obtener el ID del producto (columna 0)
-    int idProducto = Integer.parseInt(_Tabla.getValueAt(filaSeleccionada, 0).toString());
-
-    // Confirmar eliminación
-    int confirmacion = JOptionPane.showConfirmDialog(
-            this,
-            "¿Seguro que desea eliminar el producto con ID " + idProducto + "?",
-            "Confirmar eliminación",
-            JOptionPane.YES_NO_OPTION
-    );
-
-    if (confirmacion == JOptionPane.YES_OPTION) {
-        try {
-            // Crear objeto producto
-            Producto producto = new Producto();
-            
-            // Llamar al método Eliminar de la clase Producto
-            boolean eliminado = producto.Eliminar(idProducto);
-
-            if (eliminado) {
-                JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
-                CargarTabla(); // refresca los datos en la tabla
-            } else {
-                JOptionPane.showMessageDialog(this, "No se encontró el producto en la base de datos.");
-            }
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
-        }
-    }
+        Eliminar();
     }//GEN-LAST:event_jButtonEliminarActionPerformed
 
     private void jPanelTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelTablaMouseClicked
         
     }//GEN-LAST:event_jPanelTablaMouseClicked
+
+    private void jButtonActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActualizarActionPerformed
+        Actualizar();
+    }//GEN-LAST:event_jButtonActualizarActionPerformed
+    private void LimpiarVariables() {
+        _id=0;
+        
+        // Limpia los campos
+        jTextFieldNombre.setText("");
+        jFormattedTextFieldStock.setValue(0);
+        jFormattedTextFieldPrecio.setValue(0);
+        jComboBoxCategoria.setSelectedIndex(-1);
+        
+        JOptionPane.showMessageDialog(rootPane, "Producto guardado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+        
+        // Actualiza la tabla después de guardar
+        _model.setRowCount(0);  // Limpia las filas actuales
+        CargarTabla();          // Carga los datos actualizados desde la BD
+    }
+
+    private void Guardar() {
+        Producto producto = new Producto(_id);
+    producto.setNombre(jTextFieldNombre.getText());   
+    producto.setStock(((Number) jFormattedTextFieldStock.getValue()).intValue());
+    producto.setPrecio(((Number) jFormattedTextFieldPrecio.getValue()).doubleValue());
+    
+    int idCategoria = ((ComboBox) jComboBoxCategoria.getSelectedItem()).getId();
+    producto.setIdcategoria(idCategoria);
+    
+    if (producto.Guardar(_id)) {
+        LimpiarVariables();
+    } 
+    else {
+        JOptionPane.showMessageDialog(rootPane, "No fue posible guardar el producto", "Error", JOptionPane.ERROR_MESSAGE);}
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -465,6 +460,7 @@ int filaSeleccionada = _Tabla.getSelectedRow();
        }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonActualizar;
     private javax.swing.JButton jButtonEliminar;
     private javax.swing.JButton jButtonGuardar;
     private javax.swing.JComboBox<String> jComboBoxCategoria;
